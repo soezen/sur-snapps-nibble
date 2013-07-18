@@ -1,0 +1,84 @@
+<div class="hidden">
+    <!-- TODO SUR generate username datalist -->
+    <datalist id="usernames">
+    </datalist>
+</div>
+<div class="accordion" id="highscorefilters">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#highscorefilters"
+               href="#highscorecriteria">Filter</a>
+        </div>
+        <div id="highscorecriteria" class="accordion-body collapse in">
+            <div class="accordion-inner form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="filterDateAfter">Date between</label>
+
+                    <div class="controls form-inline">
+                        <input id="filterDateAfter" class="input-small" type="date" data-filtercolumn="0"
+                               data-filtertype="interval-start"/>
+                        <label for="filterDateBefore">and</label>
+                        <input id="filterDateBefore" class="input-small" type="date" data-filtercolumn="0"
+                               data-filtertype="interval-end"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="filteruser">User</label>
+
+                    <div class="controls">
+                        <input id="filteruser" type="search" list="usernames" data-filtercolumn="1"
+                               data-filtertype="text"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="speedrange">Speed</label>
+
+                    <div class="controls row">
+                        <div class="well-small">between <input id="minspeed" type="number" class="input-mini" value="0"
+                                                               data-filtertype="interval-start" data-filtercolumn="2"/>
+                            and <input id="maxspeed" type="number" class="input-mini" value="11"
+                                       data-filtertype="interval-end" data-filtercolumn="2"/></div>
+                        <div id="speedrange" class="span2"></div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Score</label>
+
+                    <div class="controls row">
+                        <div class="well-small">between <input type="number" id="minscore" class="input-mini" value="0"
+                                                               data-filtertype="interval-start" data-filtercolumn="3"/>
+                            and <input id="maxscore" type="number" class="input-mini" data-filtertype="interval-end"
+                                       data-filtercolumn="3"/></div>
+                        <div id="scorerange" class="span2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="tblScores" class="tablesorter table table-hover table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th data-filtertype="date" data-filterrange="[0, 10]">Date</th>
+        <th data-filtertype="text">User</th>
+        <th data-filtertype="number" data-filterrange="[0, 2]">Speed</th>
+        <th data-filtertype="number">Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script src="js/filter.js"></script>
+<script src="js/leaderboard.js"></script>
+<script>
+    $(document).ready(function () {
+        addTableSorter();
+        addDatepickers('tblScores');
+        addFilters('tblScores');
+        configureSpeedSlider('tblScores');
+        configureScoreSlider('tblScores');
+        loadLeaderboard();
+    });
+
+</script>

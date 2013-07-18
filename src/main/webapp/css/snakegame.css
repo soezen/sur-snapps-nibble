@@ -1,0 +1,36 @@
+body > div:not(#ui-datepicker-div) {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    width: 700px;
+    height: 600px;
+    background-color: #f7f7f9;
+}
+
+h1 {
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.accordion-heading {
+    background-color: #efefef;
+}
+
+.accordion-heading > a {
+    color: #808080;
+    font-weight: bold;
+    font-style: oblique;
+}
+
+.help-block > ul {
+    list-style-type: none;
+}
+
+#ui-datepicker-div {
+    font-size: 85%;
+}
+
+thead {
+    background-color: #e1e1e8;
+}

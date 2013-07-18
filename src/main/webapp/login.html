@@ -1,0 +1,116 @@
+<div class="accordion" id="accordion">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#existingUser">
+                Select existing user
+            </a>
+        </div>
+        <div id="existingUser" class="accordion-body collapse in">
+            <div class="accordion-inner">
+                <form onsubmit="return selectUser();">
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label" for="players">User</label>
+
+                            <div class="controls">
+                                <select id="players"></select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input type="submit" value="Select" class="btn"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#newUser">
+                Create new user
+            </a>
+        </div>
+        <div id="newUser" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <form id="newUserForm" novalidate="">
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label" for="username">Username</label>
+
+                            <div class="controls">
+                                <input type="text" id="username" data-validation-callback-callback="validateUser"
+                                       required autocomplete="off"
+                                       data-validation-required-message="Username is required"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input type="submit" value="Create" class="btn"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#adminlogin">
+                Login as Administrator
+            </a>
+        </div>
+        <div id="adminlogin" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <form id="adminLoginForm" novalidate="">
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label" for="password">Password</label>
+
+                            <div class="controls">
+                                <input type="password" id="password" data-validation-callback-callback="loginAdmin"
+                                       required data-validation-required-message="Password is required"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <input type="submit" value="Login" class="btn"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/users.js"></script>
+<script>
+    loadUsers();
+
+    $(function () {
+        $("#newUserForm").find("input").not("[type=submit]").jqBootstrapValidation({
+            preventSubmit: true,
+            submitSuccess: function ($form, event) {
+                var username = document.getElementById("username").value;
+                gameStorage.addUser(username);
+                login(username);
+            },
+            filter: function () {
+                return $(this).is(":visible");
+            }
+        });
+        $("#adminLoginForm").find("input").not("[type=submit]").jqBootstrapValidation({
+            preventSubmit: true,
+            autoAdd: {helpBlocks: false},
+            submitSuccess: function ($form, event) {
+                var username = 'admin';
+                login(username);
+            },
+            filter: function () {
+                return $(this).is(":visible");
+            }
+        });
+    });
+</script>
