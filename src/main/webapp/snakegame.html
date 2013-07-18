@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snapps - Trial</title>
+    <link rel="stylesheet" href="css/jquery-ui-1.10.3.slider.css"/>
+    <link rel="stylesheet" href="css/jquery-ui-1.10.3.datepicker.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/snakegame.css"/>
+    <script src="js/jquery/jquery-2.0.3.js"></script>
+    <script src="js/jquery/jquery.ui.core.js"></script>
+    <script src="js/jquery/jquery.ui.widget.js"></script>
+    <script src="js/jquery/jquery.ui.mouse.js"></script>
+    <script src="js/jquery/jquery.ui.datepicker.js"></script>
+    <script src="js/jquery/jquery.ui.slider.js"></script>
+    <script src="js/jquery/jquery.ui.dialog.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery/jqBootstrapValidation.js"></script>
+    <script src="js/jquery/jquery.tablesorter.js"></script>
+    <script src="js/jquery/jquery.tablesorter.pager.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+<body onload="loadContent()">
+<div class="container">
+    <h1></h1>
+
+    <div class="navbar">
+        <div id="menu" class="navbar-inner">
+            <ul class="nav pull-left">
+                <li data-view="anonymous" data-page="home" class="active"><a href="snakegame.html"
+                                                                             onclick="openPage(this)">Home</a></li>
+                <li data-view="user" data-page="dashboard"><a href="snakegame.html"
+                                                              onclick="openPage(this)">Dashboard</a></li>
+                <li data-view="user" data-page="play"><a href="snakegame.html" onclick="openPage(this)">Play</a></li>
+                <li data-view="all" data-page="leaderboard"><a href="snakegame.html" onclick="openPage(this)">Leaderboard</a>
+                </li>
+            </ul>
+            <ul class="nav pull-right">
+                <li data-view="anonymous" data-page="login"><a href="snakegame.html" onclick="openPage(this)">Login</a>
+                </li>
+                <li data-view="user" data-page="profile"><a href="snakegame.html" onclick="openPage(this)">Profile</a>
+                </li>
+                <li data-view="admin" data-page="admin"><a href="snakegame.html" onclick="openPage(this)">Admin</a></li>
+                <li data-view="user"><a href="snakegame.html" onclick="logout()">Logout</a></li>
+                <li data-view="user" id="currentUser" class="brand"></li>
+            </ul>
+        </div>
+    </div>
+    <div id="content">
+
+    </div>
+</div>
+</body>
+</html>
