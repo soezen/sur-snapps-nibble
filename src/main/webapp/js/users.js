@@ -1,9 +1,9 @@
 var gameStorage = new GameStorage();
 var gameSession = new SessionStorage();
 
-function loadUsers() {
+function loadUsers(listName) {
     var users = gameStorage.getUsers();
-    var userList = document.getElementById("players");
+    var userList = document.getElementById(listName);
 
     for (var i = 0; i < users.length; i++) {
         if (users[i] != 'admin') {
@@ -27,7 +27,12 @@ function selectUser() {
 
 function login(username) {
     gameSession.loginUser(username);
-    openPage('dashboard');
+    var menuItem = {
+        dataset: {
+            page: 'dashboard'
+        }
+    };
+    openPage(menuItem);
 }
 
 function loginAdmin($el, value, callback) {
@@ -38,9 +43,9 @@ function loginAdmin($el, value, callback) {
     });
 }
 
-function logout() {
+function logout(menuItem) {
     login(undefined);
-    openPage('home');
+    openPage(menuItem);
 }
 
 function loadSession() {
@@ -52,7 +57,10 @@ function loadSession() {
     var menuItems = document.getElementById('menu').getElementsByTagName('li');
     $(menuItems).each(function () {
         var view = this.dataset.view;
-        var page = this.dataset.page;
+        var page = "home";
+        if (this.getElementsByTagName('a').length == 1) {
+            page = this.getElementsByTagName("a")[0].dataset.page;
+        }
         if (view == 'all'
             || (loggedIn && (view == 'user'))
             || (!loggedIn && view == 'anonymous')

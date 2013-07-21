@@ -1,0 +1,23 @@
+<div class="form-horizontal">
+    <div class="control-group">
+        <div class="controls">
+            <div id="gamecontainer"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/kineticjs/kinetic-v4.5.4.js"></script>
+<script src="js/game.js"></script>
+<script>
+    $(document).ready(function () {
+        var stage = new Kinetic.Stage({
+            container: 'gamecontainer',
+            width: 400,
+            height: 400
+        });
+        var newGame = createNewGame(stage, 'user', 10);
+        newGame.loadGame(getBlockLayer(gameSession.getCurrentGame()));
+    });
+
+
+</script>

@@ -29,21 +29,32 @@
     <div class="navbar">
         <div id="menu" class="navbar-inner">
             <ul class="nav pull-left">
-                <li data-view="anonymous" data-page="home" class="active"><a href="snakegame.html"
-                                                                             onclick="openPage(this)">Home</a></li>
-                <li data-view="user" data-page="dashboard"><a href="snakegame.html"
-                                                              onclick="openPage(this)">Dashboard</a></li>
-                <li data-view="user" data-page="play"><a href="snakegame.html" onclick="openPage(this)">Play</a></li>
-                <li data-view="all" data-page="leaderboard"><a href="snakegame.html" onclick="openPage(this)">Leaderboard</a>
+                <li data-view="anonymous" class="active">
+                    <a class="btn-link" data-page="home" onclick="openPage(this)">Home</a>
+                </li>
+                <li data-view="user">
+                    <a class="btn-link" data-page="dashboard" onclick="openPage(this)">Dashboard</a>
+                </li>
+                <li data-view="user">
+                    <a class="btn-link" data-page="gameselect" onclick="openPage(this)">Play</a>
+                </li>
+                <li data-view="all">
+                    <a class="btn-link" data-page="leaderboard" onclick="openPage(this)">Leaderboard</a>
                 </li>
             </ul>
             <ul class="nav pull-right">
-                <li data-view="anonymous" data-page="login"><a href="snakegame.html" onclick="openPage(this)">Login</a>
+                <li data-view="anonymous">
+                    <a class="btn-link" data-page="login" onclick="openPage(this)">Login</a>
                 </li>
-                <li data-view="user" data-page="profile"><a href="snakegame.html" onclick="openPage(this)">Profile</a>
+                <li data-view="user">
+                    <a class="btn-link" data-page="profile" onclick="openPage(this)">Profile</a>
                 </li>
-                <li data-view="admin" data-page="admin"><a href="snakegame.html" onclick="openPage(this)">Admin</a></li>
-                <li data-view="user"><a href="snakegame.html" onclick="logout()">Logout</a></li>
+                <li data-view="admin">
+                    <a class="btn-link" data-page="admin" onclick="openPage(this)">Admin</a>
+                </li>
+                <li data-view="user">
+                    <a class="btn-link" data-page="home" onclick="logout(this)">Logout</a>
+                </li>
                 <li data-view="user" id="currentUser" class="brand"></li>
             </ul>
         </div>

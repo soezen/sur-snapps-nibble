@@ -1,0 +1,22 @@
+<div class="form-horizontal">
+    <div class="control-group">
+        <label for="games" class="control-label">Game</label>
+
+        <div class="controls">
+            <select id="games"></select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls" data->
+            <a class="btn" data-page="game" onclick="loadGame(this)">Play</a>
+        </div>
+    </div>
+</div>
+
+<script src="js/game.js"></script>
+<script>
+    $(document).ready(function () {
+        createTestGame(10, 20);
+        loadGames('games');
+    });
+</script>

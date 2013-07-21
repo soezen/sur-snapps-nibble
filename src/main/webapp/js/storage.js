@@ -4,6 +4,21 @@ function GameStorage() {
     }
     arguments.callee._singletonInstance = this;
 
+    this.getGames = function () {
+        var storage = getStorage();
+        var games = {};
+        if (isUndefined(storage)) {
+            return games;
+        }
+
+        if (!isUndefined(storage.games)) {
+            games = storage.games;
+        } else {
+            storage.games = games;
+            saveStorage(storage);
+        }
+        return games;
+    };
     this.getUsers = function () {
         var storage = getStorage();
         var users = [];
@@ -84,6 +99,14 @@ function SessionStorage() {
         storage.currentPage = page;
         saveStorage(storage);
     };
+    this.getCurrentGame = function () {
+        return getStorage().currentGame;
+    };
+    this.setCurrentGame = function (game) {
+        var storage = getStorage();
+        storage.currentGame = game;
+        saveStorage(storage);
+    }
 
     function getStorage() {
         if (isUndefined(sessionStorage.snakeGame)) {

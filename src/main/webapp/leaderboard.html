@@ -1,5 +1,4 @@
 <div class="hidden">
-    <!-- TODO SUR generate username datalist -->
     <datalist id="usernames">
     </datalist>
 </div>
@@ -74,6 +73,7 @@
 <script>
     $(document).ready(function () {
         addTableSorter();
+        // TODO SUR only show datepickers when browser does not show by default
         addDatepickers('tblScores');
         addFilters('tblScores');
         configureSpeedSlider('tblScores');
@@ -81,4 +81,5 @@
         loadLeaderboard();
     });
 
+    loadUsers('usernames')
 </script>

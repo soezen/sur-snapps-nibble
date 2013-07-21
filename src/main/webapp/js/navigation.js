@@ -10,10 +10,8 @@ function loadContent() {
 }
 
 function openPage(menuItem) {
-    var page = menuItem;
-    if (!isUndefined(menuItem.parentNode)) {
-        page = menuItem.parentNode.dataset.page;
-    }
+    menuItem.href = "snakegame.html";
+    var page = menuItem.dataset.page;
     if (page == 'home') {
         if (!isUndefined(gameSession.getCurrentUser())) {
             page = 'dashboard';
