@@ -2,17 +2,33 @@ var rowsPerPage = 10;
 
 function loadUsersInTable(tblName) {
     var users = gameStorage.getUsers();
-    var tblUsers = document.getElementById(tblName).getElementsByTagName("tbody")[0];
+    var tblUsers = $("#" + tblName).find("tbody");
 
-    tblUsers.innerHTML = "";
+    tblUsers.empty();
 
     for (var i = 0; i < users.length; i++) {
-        createRow(tblUsers, {
-            user: "<label class='checkbox'><input type='checkbox' value='" + users[i] + "' /> " + users[i] + "</label>"
-        });
+        createUserRow(tblUsers, users[i], "<label class='checkbox'><input type='checkbox' value='" + users[i].id + "' /> " + users[i].label + "</label>");
     }
 
     $("#useramount").text(getNbrOfRows(tblName));
+}
+
+function createUserRow(tbl, user) {
+    console.log(user);
+    var row = document.createElement("tr");
+    var label = document.createElement("label");
+    $(label).text(user.label);
+    $(label).attr('for', user.id);
+    $(label).addClass('checkbox');
+    var input = document.createElement("input");
+    input.id = user.id;
+    input.value = user.id;
+    label.appendChild(input);
+    input.type = 'checkbox';
+
+    appendCell(row, label);
+
+    tbl.append(row);
 }
 
 function addTableSorter(tblName) {

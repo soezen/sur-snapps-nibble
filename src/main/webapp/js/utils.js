@@ -26,21 +26,46 @@ function isNullOrEmpty(text) {
 
 }
 
-function createRow(tbl, values) {
-    var row = document.createElement("tr");
+function loadOptions(listName, optionObjects) {
+    var ls = document.getElementById(listName);
 
-    for (var key in values) {
-        if (values.hasOwnProperty(key)) {
-            appendCell(row, values[key]);
+    for (var key in optionObjects) {
+        if (optionObjects.hasOwnProperty(key)) {
+            var option = new Option();
+            option.text = optionObjects[key].label;
+            option.value = optionObjects[key].id;
+            ls.appendChild(option);
         }
     }
-
-    tbl.appendChild(row);
 }
 
-function appendCell(row, content) {
+function getTime() {
+    var now = new Date();
+    var day = lastTwoChars(now.getDate());
+    var month = lastTwoChars(now.getMonth() + 1);
+    var year = now.getFullYear();
+    var hours = lastTwoChars(now.getHours());
+    var minutes = lastTwoChars(now.getMinutes());
+    var seconds = lastTwoChars(now.getSeconds());
+
+    var dateString = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+    return dateString;
+}
+
+function lastTwoChars(string) {
+    var chars = "0" + string;
+    return chars.substring(chars.length - 2, chars.length);
+}
+
+function appendCell(row, content, append) {
     var cell = document.createElement("td");
-    cell.innerHTML = content;
+    if (!isUndefined(content)) {
+        if (append) {
+            cell.appendChild(content);
+        } else {
+            cell.innerHTML = content;
+        }
+    }
     row.appendChild(cell);
 }
 

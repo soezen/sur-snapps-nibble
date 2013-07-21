@@ -1,20 +1,6 @@
 var gameStorage = new GameStorage();
 var gameSession = new SessionStorage();
 
-function loadUsers(listName) {
-    var users = gameStorage.getUsers();
-    var userList = document.getElementById(listName);
-
-    for (var i = 0; i < users.length; i++) {
-        if (users[i] != 'admin') {
-            var option = new Option();
-            option.text = users[i];
-            option.value = users[i];
-            userList.appendChild(option);
-        }
-    }
-}
-
 function selectUser() {
     var players = document.getElementById('players');
     if (!isUndefined(players.selectedOptions)) {

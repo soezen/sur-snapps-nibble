@@ -9,23 +9,8 @@ var Direction = {
     LEFT: 'L',
     UP: 'U'};
 
-function loadGames(listName) {
-    // TODO SUR add option to load only public games, together with owned games
-    var games = gameStorage.getGames();
-    var ls = document.getElementById(listName);
-
-    for (var key in games) {
-        if (games.hasOwnProperty(key)) {
-            var option = new Option();
-            option.text = key;
-            option.value = key;
-            ls.appendChild(option);
-        }
-    }
-}
 
 function loadGame(menuItem) {
-    console.log('test');
     var gameSelect = document.getElementById("games");
     var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
     gameSession.setCurrentGame(currentGame);
@@ -68,11 +53,19 @@ function createTestGame(rows, columns) {
         colors: colors
     };
     var storage = JSON.parse(localStorage.snakeGame);
-    storage.games.test = {
+    var games = storage.games;
+    if (isUndefined(games)) {
+        games = {};
+    }
+    // TODO SUR when creating game by gui, id and label are determined by gui, use id as key of object
+    games.test = {
+        id: 'test',
+        label: 'test',
         blocks: blocks,
         rows: 10,
         columns: 20
     };
+    storage.games = games;
     localStorage.snakeGame = JSON.stringify(storage);
 }
 
@@ -261,6 +254,11 @@ function createNewGame(stage, user, speed) {
         }
     }
 
+    function updateScore(block) {
+        outGame.score += block.config.score;
+        document.getElementById("score").value = outGame.score;
+    }
+
     function processBonus(block) {
         var bonusses = block.config.bonus;
         for (var key in bonusses) {
@@ -271,6 +269,12 @@ function createNewGame(stage, user, speed) {
                 }
             }
         }
+    }
+
+    function setGame(inGame) {
+        game = inGame;
+        stage.setWidth((inGame.columns * totalLength) + (2 * init));
+        stage.setHeight((inGame.rows * totalLength) + (2 * init));
     }
 
     function addSnakeBonus(block) {
@@ -286,6 +290,13 @@ function createNewGame(stage, user, speed) {
             snake.head.destroy();
             status = SnakeStatus.ENDED;
             snakeMove.stop();
+            gameStorage.addGameScore({
+                time: getTime(),
+                user: outGame.user,
+                game: game.id,
+                speed: outGame.config.speed,
+                score: outGame.score
+            });
             console.log('game over');
         }
 
@@ -342,6 +353,7 @@ function createNewGame(stage, user, speed) {
             if (block.config.gameOver) {
                 return false;
             }
+            updateScore(block);
             processBonus(block);
             placeNextBlock(block);
             colorNextBlock(block);
@@ -349,7 +361,7 @@ function createNewGame(stage, user, speed) {
             return true;
         },
         loadGame: function (inGame) {
-            game = inGame;
+            setGame(inGame);
             // TODO SUR update stage height and width if necessary
             var kineticLayer = new Kinetic.Layer({});
             updateLayers.push(kineticLayer);

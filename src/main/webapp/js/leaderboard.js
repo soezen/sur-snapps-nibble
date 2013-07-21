@@ -1,20 +1,30 @@
 function loadLeaderboard() {
     // clear table
-    $("#tblScores").find("tbody").empty();
+    var tbody = $("#tblScores").find("tbody");
+    tbody.empty();
+    var scores = gameStorage.getScores();
 
-    // fill table with data from local storage
-    var history;
-    if (isUndefined(localStorage.history)) {
-        history = [];
-    } else {
-        history = JSON.parse(localStorage.history);
-    }
-
-    for (var i = 0; i < history.length; i++) {
-        createRow(tbody, history[i]);
+    for (var key in scores) {
+        if (scores.hasOwnProperty(key)) {
+            createLeaderboardRow(tbody, scores[key]);
+        }
     }
 }
 
+// TODO SUR determine highscore (score slider)
+// TODO SUR format date
+
+function createLeaderboardRow(tbl, values) {
+    var row = document.createElement("tr");
+
+    appendCell(row, values['time'], false);
+    appendCell(row, values['user'], false);
+    appendCell(row, values['game'], false);
+    appendCell(row, values['speed'], false);
+    appendCell(row, values['score'], false);
+
+    tbl.append(row);
+}
 
 function addTableSorter() {
     $("#tblScores").tablesorter({

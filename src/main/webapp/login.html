@@ -87,14 +87,17 @@
 
 <script src="js/users.js"></script>
 <script>
-    loadUsers('players');
+    loadOptions('players', gameStorage.getUsers());
 
     $(function () {
         $("#newUserForm").find("input").not("[type=submit]").jqBootstrapValidation({
             preventSubmit: true,
             submitSuccess: function ($form, event) {
                 var username = document.getElementById("username").value;
-                gameStorage.addUser(username);
+                gameStorage.addUser({
+                    id: username,
+                    label: username
+                });
                 login(username);
             },
             filter: function () {

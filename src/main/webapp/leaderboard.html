@@ -1,6 +1,6 @@
 <div class="hidden">
-    <datalist id="usernames">
-    </datalist>
+    <datalist id="usernames"></datalist>
+    <datalist id="games"></datalist>
 </div>
 <div class="accordion" id="highscorefilters">
     <div class="accordion-group">
@@ -30,13 +30,23 @@
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="filtergame">Game</label>
+
+                    <div class="controls">
+                        <input id="filtergame" type="search" list="games" data-filtercolumn="2" data-filtertype="text"/>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="speedrange">Speed</label>
 
                     <div class="controls row">
-                        <div class="well-small">between <input id="minspeed" type="number" class="input-mini" value="0"
-                                                               data-filtertype="interval-start" data-filtercolumn="2"/>
-                            and <input id="maxspeed" type="number" class="input-mini" value="11"
-                                       data-filtertype="interval-end" data-filtercolumn="2"/></div>
+                        <div class="well-small">
+                            between
+                            <input id="minspeed" type="number" class="input-mini" value="0"
+                                   data-filtertype="interval-start" data-filtercolumn="2"/>
+                            and
+                            <input id="maxspeed" type="number" class="input-mini" value="11"
+                                   data-filtertype="interval-end" data-filtercolumn="2"/></div>
                         <div id="speedrange" class="span2"></div>
                     </div>
                 </div>
@@ -60,6 +70,7 @@
     <tr>
         <th data-filtertype="date" data-filterrange="[0, 10]">Date</th>
         <th data-filtertype="text">User</th>
+        <th data-filtertype="text">Game</th>
         <th data-filtertype="number" data-filterrange="[0, 2]">Speed</th>
         <th data-filtertype="number">Score</th>
     </tr>
@@ -72,6 +83,10 @@
 <script src="js/leaderboard.js"></script>
 <script>
     $(document).ready(function () {
+        loadOptions('usernames', gameStorage.getUsers());
+        // TODO SUR add option to load only public optionObjects, together with owned optionObjects
+        loadOptions('games', gameStorage.getGames());
+
         addTableSorter();
         // TODO SUR only show datepickers when browser does not show by default
         addDatepickers('tblScores');
@@ -81,5 +96,4 @@
         loadLeaderboard();
     });
 
-    loadUsers('usernames')
 </script>

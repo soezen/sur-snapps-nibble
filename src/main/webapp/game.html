@@ -4,6 +4,13 @@
             <div id="gamecontainer"></div>
         </div>
     </div>
+    <div class="control-group">
+        <label for="score" class="control-label">Score</label>
+
+        <div class="controls">
+            <input type="text" readonly id="score" value="0"/>
+        </div>
+    </div>
 </div>
 
 <script src="js/kineticjs/kinetic-v4.5.4.js"></script>
@@ -15,7 +22,7 @@
             width: 400,
             height: 400
         });
-        var newGame = createNewGame(stage, 'user', 10);
+        var newGame = createNewGame(stage, gameSession.getCurrentUser(), 10);
         newGame.loadGame(getBlockLayer(gameSession.getCurrentGame()));
     });
 
