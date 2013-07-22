@@ -9,12 +9,11 @@ function addFilters(tblName) {
 }
 
 function filter(tblName, input) {
-    console.log(input);
     if (input.validity.valid) {
         var column = eval(input.dataset.filtercolumn);
-        var datatype = getFilterConfig(tblName, 'filtertype', column);
+        var dataType = getFilterConfig(tblName, 'filtertype', column);
 
-        filterColumns(tblName, column, getFilter(input, column, datatype));
+        filterColumns(tblName, column, getFilter(input, column, dataType));
     } else {
         console.log('not valid');
     }
@@ -70,7 +69,8 @@ function getFilterInterval(column, datatype, start, end) {
     } else if (datatype == 'number') {
         filterFunction = function (td) {
             var value = td.innerHTML;
-            var range = getFilterConfig('filterrange', column);
+            var tblName = $(td).parents('table').attr('id');
+            var range = getFilterConfig(tblName, 'filterrange', column);
             if (!isUndefined(range) && range.length == 2) {
                 value = value.substring(range[0], range[1]);
             }

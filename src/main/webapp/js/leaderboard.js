@@ -11,7 +11,7 @@ function loadLeaderboard() {
     }
 }
 
-// TODO SUR determine highscore (score slider)
+// TODO SUR determine highScore (score slider)
 // TODO SUR format date
 
 function createLeaderboardRow(tbl, values) {
@@ -62,7 +62,7 @@ function configureScoreSlider(tblName) {
     var minScore = $("#minscore");
     var maxScore = $("#maxscore");
 
-    maxScore.val(gameStorage.getHighscore());
+    maxScore.val(gameStorage.getHighScore());
 
     minScore.off('change');
     maxScore.off('change');
@@ -70,7 +70,7 @@ function configureScoreSlider(tblName) {
     var scoreSlider = $("#scorerange").slider({
         range: true,
         min: 0,
-        max: gameStorage.getHighscore(),
+        max: gameStorage.getHighScore(),
         values: [minScore.val(), maxScore.val()],
         slide: function (event, ui) {
             if (ui.values[0] == ui.value) {
@@ -96,8 +96,8 @@ function configureScoreSlider(tblName) {
         var min = minScore.val();
         if (eval(min) > eval(this.value)) {
             this.value = min;
-        } else if (eval(this.value) > gameStorage.getHighscore()) {
-            this.value = gameStorage.getHighscore();
+        } else if (eval(this.value) > gameStorage.getHighScore()) {
+            this.value = gameStorage.getHighScore();
         }
         scoreSlider.slider("values", [min, this.value]);
         filter(tblName, this);

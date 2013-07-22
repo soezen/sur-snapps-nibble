@@ -69,18 +69,23 @@ function GameStorage() {
         var scores = this.getScores();
         scores.push(score);
         storage.scores = scores;
+
+        var highScore = this.getHighScore();
+        if (score.score > highScore) {
+            storage.highScore = score.score;
+        }
         saveStorage(storage);
     };
-    this.getHighscore = function () {
+    this.getHighScore = function () {
         var storage = getStorage();
-        var highscore = 0;
-        if (isUndefined(storage.highscore)) {
-            storage.highscore = highscore;
+        var highScore = 0;
+        if (isUndefined(storage.highScore)) {
+            storage.highScore = highScore;
             saveStorage(storage);
         } else {
-            highscore = storage.highscore;
+            highScore = storage.highScore;
         }
-        return highscore;
+        return highScore;
     };
 
     function getStorage() {
