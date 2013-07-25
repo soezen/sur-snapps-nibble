@@ -62,7 +62,7 @@ function createTestGame(rows, columns) {
         id: 'test',
         label: 'test',
         blocks: blocks,
-        rows: 10,
+        rows: 20,
         columns: 20
     };
     storage.games = games;
@@ -128,16 +128,6 @@ function createNewGame(stage, user, speed) {
                 return newLocation;
             }
 
-            function containsLocation(array, element) {
-                for (var i = 0; i < array.length; i++) {
-                    if (array[i].x == element.x
-                        && array[i].y == element.y) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             var next = false;
             var location = newLocation;
             var blockDirection = false;
@@ -173,6 +163,7 @@ function createNewGame(stage, user, speed) {
 
                         if (next) {
                             others.push(location);
+                            snake.blocks = others;
                             if (!next.move(next, blockDirection, others)) {
                                 return false;
                             }
@@ -192,9 +183,13 @@ function createNewGame(stage, user, speed) {
             };
         }
 
+        // TODO SUR allow user to specify speed (if game allows it)
+        // TODO SUR show game config in leaderboard
+
         var stepCount = 0;
         var head = createSnakeBlock({ x: 1, y: 1 }, '#8ED6FF');
         var snake = {
+            blocks: [],
             direction: Direction.RIGHT,
             changedDirection: false,
             head: head,
@@ -220,8 +215,19 @@ function createNewGame(stage, user, speed) {
         return snake;
     }
 
+    function containsLocation(array, element) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].x == element.x
+                && array[i].y == element.y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function isLocationFree(location) {
-        return !objectHasKey(game.blocks, location.y + 'x' + location.x);
+        return !objectHasKey(game.blocks, location.y + 'x' + location.x)
+            && !containsLocation(snake.blocks, location);
     }
 
     function getRandomFreeLocation() {
@@ -362,7 +368,6 @@ function createNewGame(stage, user, speed) {
         },
         loadGame: function (inGame) {
             setGame(inGame);
-            // TODO SUR update stage height and width if necessary
             var kineticLayer = new Kinetic.Layer({});
             updateLayers.push(kineticLayer);
 

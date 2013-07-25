@@ -11,17 +11,18 @@ function loadLeaderboard() {
     }
 }
 
-// TODO SUR determine highScore (score slider)
-// TODO SUR format date
-
 function createLeaderboardRow(tbl, values) {
     var row = document.createElement("tr");
+    var currentUser = gameSession.getCurrentUser();
+    if (currentUser == values.user) {
+        $(row).addClass("warning");
+    }
 
-    appendCell(row, values['time'], false);
-    appendCell(row, values['user'], false);
-    appendCell(row, values['game'], false);
-    appendCell(row, values['speed'], false);
-    appendCell(row, values['score'], false);
+    appendCell(row, values.time, false);
+    appendCell(row, values.user, false);
+    appendCell(row, values.game, false);
+    appendCell(row, values.speed, false);
+    appendCell(row, values.score, false);
 
     tbl.append(row);
 }

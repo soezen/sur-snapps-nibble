@@ -90,13 +90,14 @@
         // TODO SUR add option to load only public optionObjects, together with owned optionObjects
         loadOptions('games', gameStorage.getGames());
 
-        addTableSorter();
         // TODO SUR only show datepickers when browser does not show by default
         addDatepickers('tblScores');
         addFilters('tblScores');
         configureSpeedSlider('tblScores');
         configureScoreSlider('tblScores');
         loadLeaderboard();
+        addTableSorter();
     });
 
+    // TODO SUR add paginator to leaderboard
 </script>
