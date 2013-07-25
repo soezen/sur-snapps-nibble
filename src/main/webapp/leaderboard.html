@@ -82,6 +82,13 @@
     </tbody>
 </table>
 
+<div class="pagination pagination-centered">
+    <ul data-paginator-table="tblScores" data-paginator-rowsperpage="5">
+        <li class="active"><a href="#">1</a></li>
+    </ul>
+</div>
+
+<script src="js/table-utils.js"></script>
 <script src="js/filter.js"></script>
 <script src="js/leaderboard.js"></script>
 <script>
@@ -96,7 +103,8 @@
         configureSpeedSlider('tblScores');
         configureScoreSlider('tblScores');
         loadLeaderboard();
-        addTableSorter();
+        createTablePaginator('tblScores');
+        addTableSorter('tblScores', 4, false);
     });
 
     // TODO SUR add paginator to leaderboard

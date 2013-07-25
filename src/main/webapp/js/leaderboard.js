@@ -27,17 +27,6 @@ function createLeaderboardRow(tbl, values) {
     tbl.append(row);
 }
 
-function addTableSorter() {
-    $("#tblScores").tablesorter({
-        dateFormat: 'uk',
-        headers: {
-            0: {
-                sorter: 'shortDate'
-            }
-        }
-    });
-}
-
 function addDatepickers(tblName) {
     $("#filterDateBefore").datepicker({
         showOn: "button",

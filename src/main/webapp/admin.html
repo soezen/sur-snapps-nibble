@@ -35,7 +35,7 @@
         <p><span id="useramount"></span> users</p>
 
         <div class="pagination pagination-centered">
-            <ul data-paginator-table="tblUsers">
+            <ul data-paginator-table="tblUsers" data-paginator-rowsperpage="1">
                 <li class="active"><a href="#">1</a></li>
             </ul>
         </div>
@@ -48,13 +48,14 @@
     </div>
 </div>
 
+<script src="js/table-utils.js"></script>
 <script src="js/filter.js"></script>
 <script src="js/admin.js"></script>
 <script>
     $(document).ready(function () {
         loadUsersInTable('tblUsers');
-        addTableSorter('tblUsers');
         createTablePaginator('tblUsers');
+        addTableSorter('tblUsers', 0, true);
         addFilters('tblUsers');
     });
 </script>
