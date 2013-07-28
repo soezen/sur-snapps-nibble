@@ -10,8 +10,13 @@ var Direction = {
     UP: 'UP'};
 
 // TODO SUR maxBlocks on field
-// TODO SUR make these objects which also contain other data (chance, ...)
-var bonusTypes = ['speedup', 'speeddown', 'snakeadd', 'snakeremove', 'nothing'];
+var bonusTypes = [
+    { name: 'speedup', chance: 0.5},
+    { name: 'speeddown', chance: 0.05 },
+    { name: 'snakeadd', chance: 0.4 },
+    { name: 'snakeremove', chance: 0.02 },
+    { name: 'nothing', chance: 0.3 }
+];
 var types = {
     speedup: {
         score: 5,
@@ -63,9 +68,6 @@ var types = {
     }
 };
 
-// TODO SUR add chance to bonus blocks
-// TODO SUR add new bonus block: remove snake block
-
 function loadGame(menuItem) {
     var gameSelect = document.getElementById("games");
     var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
@@ -87,7 +89,8 @@ function createTestGame(rows, columns) {
     }
 
     var randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-    blocks['7x10'] = createNewBlock(types[randomType], { x: 10, y: 7 });
+    console.log(randomType);
+    blocks['7x10'] = createNewBlock(types[randomType.name], { x: 10, y: 7 });
 
     var storage = JSON.parse(localStorage.snakeGame);
     var games = storage.games;
@@ -203,7 +206,9 @@ function createNewGame(stage, user, inSpeed) {
 
                     if (outGame.onLocation(newLocation)) {
                         location = newLocation;
+                        //noinspection JSUnresolvedFunction
                         rect.setX(getCoordinates(location).x);
+                        //noinspection JSUnresolvedFunction
                         rect.setY(getCoordinates(location).y);
 
                         if (next) {
@@ -271,10 +276,14 @@ function createNewGame(stage, user, inSpeed) {
                 head.removeBlock(true)
             },
             speedUp: function () {
-                speed--;
+                if (speed > 0) {
+                    speed--;
+                }
             },
             speedDown: function () {
-                speed++;
+                if (speed < 11) {
+                    speed++;
+                }
             }
         };
 
@@ -306,11 +315,24 @@ function createNewGame(stage, user, inSpeed) {
         return location;
     }
 
+    function getNextBonusType(block) {
+        var random = Math.floor(Math.random() * 100);
+        var max = 0;
+        for (var i = 0; i < block.type.nextTypes.length; i++) {
+            var nextType = block.type.nextTypes[i];
+            max += (nextType.chance * 100);
+            if (random <= max) {
+                return nextType.name;
+            }
+        }
+        return block.type.nextTypes[0].name;
+    }
+
     function placeNextBlock(block) {
         var newLocation = getRandomFreeLocation();
         var newType = block.type;
         if (block.type.next == 'random') {
-            newType = types[block.type.nextTypes[Math.floor(Math.random() * block.type.nextTypes.length)]];
+            newType = types[getNextBonusType(block)];
         }
         game.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
     }
