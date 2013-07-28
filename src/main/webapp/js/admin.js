@@ -29,7 +29,7 @@ function createUserRow(tbl, user) {
 }
 
 
-function removeSelectedUsers(e) {
+function removeSelectedUsers() {
     var tblName = 'tblUsers';
     var selectedUsers = $("#" + tblName).find("tbody").find("tr").find("input[type=checkbox]:checked");
 
@@ -44,9 +44,10 @@ function removeSelectedUsers(e) {
     $("input").val('');
 }
 
+// TODO SUR also be able to delete only scores of one person
+// TODO SUR when deleting user, also delete his scores
 function clearHistory() {
-    localStorage.history = JSON.stringify([]);
-    loadLeaderboard();
+    gameStorage.clearScores();
 }
 
 

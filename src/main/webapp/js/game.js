@@ -1,13 +1,13 @@
 var SnakeStatus = {
-    RUNNING: 'R',
-    PAUSED: 'P',
-    ENDED: 'E',
-    NEW: 'N'};
+    RUNNING: 'RUNNING',
+    PAUSED: 'PAUSED',
+    ENDED: 'ENDED',
+    NEW: 'NEW'};
 var Direction = {
-    RIGHT: 'R',
-    DOWN: 'D',
-    LEFT: 'L',
-    UP: 'U'};
+    RIGHT: 'RIGHT',
+    DOWN: 'DOWN',
+    LEFT: 'LEFT',
+    UP: 'UP'};
 
 // TODO SUR make these objects which also contain other data (chance, ...)
 var bonusTypes = ['speedup', 'speeddown', 'snakeadd', 'nothing'];
