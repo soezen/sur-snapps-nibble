@@ -45,7 +45,6 @@ function removeSelectedUsers() {
 }
 
 // TODO SUR also be able to delete only scores of one person
-// TODO SUR when deleting user, also delete his scores
 function clearHistory() {
     gameStorage.clearScores();
 }

@@ -27,6 +27,9 @@ function createLeaderboardRow(tbl, values) {
     tbl.append(row);
 }
 
+// TODO SUR remove column speed and replace with game config details (as detail row)
+// TODO SUR also add certain game configs as filter
+
 function addDatepickers(tblName) {
     $("#filterDateBefore").datepicker({
         showOn: "button",

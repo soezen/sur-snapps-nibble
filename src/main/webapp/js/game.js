@@ -9,8 +9,9 @@ var Direction = {
     LEFT: 'LEFT',
     UP: 'UP'};
 
+// TODO SUR maxBlocks on field
 // TODO SUR make these objects which also contain other data (chance, ...)
-var bonusTypes = ['speedup', 'speeddown', 'snakeadd', 'nothing'];
+var bonusTypes = ['speedup', 'speeddown', 'snakeadd', 'snakeremove', 'nothing'];
 var types = {
     speedup: {
         score: 5,
@@ -39,6 +40,15 @@ var types = {
         nextAmount: 2,
         nextTypes: bonusTypes
     },
+    snakeremove: {
+        score: 10,
+        gameOver: false,
+        color: 'blue',
+        bonus: ['snakeremove'],
+        next: ['random'],
+        nextAmount: 3,
+        nextTypes: bonusTypes
+    },
     nothing: {
         score: 1,
         gameOver: false,
@@ -52,6 +62,9 @@ var types = {
         color: 'black'
     }
 };
+
+// TODO SUR add chance to bonus blocks
+// TODO SUR add new bonus block: remove snake block
 
 function loadGame(menuItem) {
     var gameSelect = document.getElementById("games");
@@ -178,6 +191,7 @@ function createNewGame(stage, user, inSpeed) {
                         next.destroy();
                     }
                     rect.destroy();
+                    return true;
                 },
                 move: function (self, dir, others) {
                     var newLocation = nextLocation(dir, 1);
@@ -210,6 +224,18 @@ function createNewGame(stage, user, inSpeed) {
                     } else {
                         next.addBlock(block);
                     }
+                },
+                removeBlock: function (isHead) {
+                    if (!next) {
+                        if (!isHead) {
+                            return this.destroy();
+                        }
+                    } else {
+                        if (next.removeBlock(false)) {
+                            next = false;
+                        }
+                    }
+                    return false;
                 }
             };
         }
@@ -240,6 +266,9 @@ function createNewGame(stage, user, inSpeed) {
             },
             addBlock: function (block) {
                 head.addBlock(block);
+            },
+            removeBlock: function () {
+                head.removeBlock(true)
             },
             speedUp: function () {
                 speed--;
@@ -304,6 +333,9 @@ function createNewGame(stage, user, inSpeed) {
                 var bonus = bonusses[key];
                 if (bonus == 'snakeadd') {
                     snake.addBlock(block);
+                }
+                if (bonus == 'snakeremove') {
+                    snake.removeBlock();
                 }
                 if (bonus == 'speedup') {
                     snake.speedUp();
