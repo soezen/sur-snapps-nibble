@@ -1,5 +1,4 @@
 function addTableSorter(tblName, defaultSortColumn, ascending) {
-    // TODO SUR add defaultSortColumn
     try {
         var table = $("#" + tblName);
         table.tablesorter({
@@ -18,7 +17,7 @@ function addTableSorter(tblName, defaultSortColumn, ascending) {
 function previousPage(tblName) {
     var paginator = getPaginator(tblName);
     var currentPage = paginator.find("li[class=active]");
-    var nbrOfPages = getNbrOfPages(tblName, getRowsPerPage(tblName));
+    var nbrOfPages = getNbrOfPages(tblName);
 
     checkBeforeUpdatePaginator(paginator, tblName, nbrOfPages);
 
@@ -33,7 +32,7 @@ function previousPage(tblName) {
 function nextPage(tblName) {
     var paginator = getPaginator(tblName);
     var currentPage = paginator.find("li[class=active]");
-    var nbrOfPages = getNbrOfPages(tblName, rowsPerPage);
+    var nbrOfPages = getNbrOfPages(tblName);
 
     checkBeforeUpdatePaginator(paginator, tblName, nbrOfPages);
 
@@ -47,7 +46,7 @@ function nextPage(tblName) {
 
 function goToPage(tblName, index) {
     var paginator = getPaginator(tblName);
-    var nbrOfPages = getNbrOfPages(tblName, getRowsPerPage(tblName));
+    var nbrOfPages = getNbrOfPages(tblName);
     var currentPage = paginator.find("[class=active]");
     var nextPage = paginator.find("li:nth-child(" + (eval(index) + 1) + ")");
 
@@ -62,7 +61,7 @@ function goToPage(tblName, index) {
 }
 
 function createTablePaginator(tblName) {
-    var nbrOfPages = getNbrOfPages(tblName, getRowsPerPage(tblName));
+    var nbrOfPages = getNbrOfPages(tblName);
     var paginator = getPaginator(tblName);
     paginator.empty();
     var prev = createPaginatorItem(tblName, '<<', previousPage);
@@ -131,7 +130,7 @@ function showCurrentPage(tblName) {
     });
 
     var paginator = getPaginator(tblName);
-    var nbrOfPages = getNbrOfPages(tblName, rowsPerPage);
+    var nbrOfPages = getNbrOfPages(tblName);
     var nbrOfButtons = paginator.find("li").length - 2;
 
     if (nbrOfPages < nbrOfButtons) {
@@ -177,10 +176,9 @@ function getPaginator(tblName) {
 /**
  * Counts the number of pages a table has, based on the number of rows visible on one page.
  * @param tblName
- * @param rowsPerPage
  * @returns {number}
  */
-function getNbrOfPages(tblName, rowsPerPage) {
+function getNbrOfPages(tblName) {
     var nbrOfRows = getNbrOfRows(tblName);
     var rowsPerPage = getRowsPerPage(tblName);
     return Math.ceil(nbrOfRows / rowsPerPage);

@@ -9,6 +9,49 @@ var Direction = {
     LEFT: 'L',
     UP: 'U'};
 
+// TODO SUR make these objects which also contain other data (chance, ...)
+var bonusTypes = ['speedup', 'speeddown', 'snakeadd', 'nothing'];
+var types = {
+    speedup: {
+        score: 5,
+        gameOver: false,
+        color: 'red',
+        bonus: ['speedup'],
+        next: ['random'],
+        nextAmount: 1,
+        nextTypes: bonusTypes
+    },
+    speeddown: {
+        score: 1,
+        gameOver: false,
+        color: 'yellow',
+        bonus: ['snakeadd', 'speeddown'],
+        next: ['random'],
+        nextAmount: 1,
+        nextTypes: bonusTypes
+    },
+    snakeadd: {
+        score: 3,
+        gameOver: false,
+        color: 'lightgreen',
+        bonus: ['snakeadd'],
+        next: ['random'],
+        nextAmount: 2,
+        nextTypes: bonusTypes
+    },
+    nothing: {
+        score: 1,
+        gameOver: false,
+        color: 'orange',
+        next: ['random'],
+        nextAmount: 'min',
+        nextTypes: bonusTypes
+    },
+    wall: {
+        gameOver: true,
+        color: 'black'
+    }
+};
 
 function loadGame(menuItem) {
     var gameSelect = document.getElementById("games");
@@ -19,39 +62,20 @@ function loadGame(menuItem) {
 
 // TODO SUR remove this
 function createTestGame(rows, columns) {
-    var fillColor = '#000000';
     var blocks = {};
 
     for (var row = 0; row < rows; row++) {
-        blocks[row + 'x' + 0] = createNewBlock(fillColor, { x: 0, y: row });
-        blocks[row + 'x' + (columns - 1)] = createNewBlock(fillColor, { x: columns - 1, y: row });
+        blocks[row + 'x' + 0] = createNewBlock(types.wall, { x: 0, y: row });
+        blocks[row + 'x' + (columns - 1)] = createNewBlock(types.wall, { x: columns - 1, y: row });
     }
     for (var col = 1; col < columns - 1; col++) {
-        blocks[0 + 'x' + col] = createNewBlock(fillColor, { x: col, y: 0 });
-        blocks[(rows - 1) + 'x' + col] = createNewBlock(fillColor, { x: col, y: rows - 1 });
+        blocks[0 + 'x' + col] = createNewBlock(types.wall, { x: col, y: 0 });
+        blocks[(rows - 1) + 'x' + col] = createNewBlock(types.wall, { x: col, y: rows - 1 });
     }
 
-    for (var key in blocks) {
-        if (blocks.hasOwnProperty(key)) {
-            var block = blocks[key];
-            block.config = {
-                gameOver: true
-            }
-        }
-    }
+    var randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+    blocks['7x10'] = createNewBlock(types[randomType], { x: 10, y: 7 });
 
-    var colors = ['yellow', 'lightgreen', 'red', 'orange'];
-    var randomColor = colors[Math.floor(Math.random() * colors.length)];
-    blocks['7x10'] = createNewBlock(randomColor, { x: 10, y: 7 });
-    blocks['7x10'].config = {
-        gameOver: false,
-        nextBlock: 'random',
-        nextColor: 'random',
-        nextAmount: 1,
-        score: 5,
-        bonus: ['snake'],
-        colors: colors
-    };
     var storage = JSON.parse(localStorage.snakeGame);
     var games = storage.games;
     if (isUndefined(games)) {
@@ -63,35 +87,38 @@ function createTestGame(rows, columns) {
         label: 'test',
         blocks: blocks,
         rows: 20,
-        columns: 20
+        columns: 20,
+        minBlocks: 0
     };
     storage.games = games;
     localStorage.snakeGame = JSON.stringify(storage);
 }
 
-function createNewBlock(fillColor, location) {
+function createNewBlock(type, location) {
     return {
-        location: location,
-        color: fillColor
-    }
+        type: type,
+        location: location
+    };
 }
 
-function createNewGame(stage, user, speed) {
+function createNewGame(stage, user, inSpeed) {
+    var bonusLayer = new Kinetic.Layer({});
     var updateLayers = [];
     var game = {
         blocks: {},
         rows: 0,
-        columns: 0
+        columns: 0,
+        minBlocks: 0
     };
     var init = 2;
     var length = 8;
     var strokeWidth = 1;
     var totalLength = length + (2 * strokeWidth);
 
-    function getCoordinates(row, column) {
+    function getCoordinates(location) {
         return {
-            x: init + (column * totalLength),
-            y: init + (row * totalLength)
+            x: init + (location.x * totalLength),
+            y: init + (location.y * totalLength)
         };
     }
 
@@ -128,12 +155,16 @@ function createNewGame(stage, user, speed) {
                 return newLocation;
             }
 
+            if (isUndefined(fillColor)) {
+                fillColor = '#8ED6FF';
+            }
+
             var next = false;
             var location = newLocation;
             var blockDirection = false;
             var rect = new Kinetic.Rect({
-                x: getCoordinates(location.y, location.x).x,
-                y: getCoordinates(location.y, location.x).y,
+                x: getCoordinates(location).x,
+                y: getCoordinates(location).y,
                 width: length,
                 height: length,
                 fill: fillColor,
@@ -158,8 +189,8 @@ function createNewGame(stage, user, speed) {
 
                     if (outGame.onLocation(newLocation)) {
                         location = newLocation;
-                        rect.setX(getCoordinates(location.y, location.x).x);
-                        rect.setY(getCoordinates(location.y, location.x).y);
+                        rect.setX(getCoordinates(location).x);
+                        rect.setY(getCoordinates(location).y);
 
                         if (next) {
                             others.push(location);
@@ -175,7 +206,7 @@ function createNewGame(stage, user, speed) {
                 },
                 addBlock: function (block) {
                     if (!next) {
-                        next = createSnakeBlock(nextLocation(blockDirection, -1), block.color);
+                        next = createSnakeBlock(nextLocation(blockDirection, -1));
                     } else {
                         next.addBlock(block);
                     }
@@ -187,7 +218,8 @@ function createNewGame(stage, user, speed) {
         // TODO SUR show game config in leaderboard
 
         var stepCount = 0;
-        var head = createSnakeBlock({ x: 1, y: 1 }, '#8ED6FF');
+        var speed = inSpeed;
+        var head = createSnakeBlock({ x: 1, y: 1 });
         var snake = {
             blocks: [],
             direction: Direction.RIGHT,
@@ -208,6 +240,12 @@ function createNewGame(stage, user, speed) {
             },
             addBlock: function (block) {
                 head.addBlock(block);
+            },
+            speedUp: function () {
+                speed--;
+            },
+            speedDown: function () {
+                speed++;
             }
         };
 
@@ -240,51 +278,65 @@ function createNewGame(stage, user, speed) {
     }
 
     function placeNextBlock(block) {
-        if (block.config.nextBlock == 'random') {
-            delete game.blocks[block.location.y + 'x' + block.location.x];
-            var newLocation = getRandomFreeLocation();
-            block.location = newLocation;
-            game.blocks[newLocation.y + 'x' + newLocation.x] = block;
-            if (!isUndefined(block.rect)) {
-                block.rect.setX(getCoordinates(block.location.y, block.location.x).x);
-                block.rect.setY(getCoordinates(block.location.y, block.location.x).y);
-            }
+        var newLocation = getRandomFreeLocation();
+        var newType = block.type;
+        if (block.type.next == 'random') {
+            newType = types[block.type.nextTypes[Math.floor(Math.random() * block.type.nextTypes.length)]];
         }
+        game.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
     }
 
-    function colorNextBlock(block) {
-        if (block.config.nextBlock == 'random') {
-            var colors = block.config.colors;
-            block.color = colors[Math.floor(Math.random() * colors.length)];
-            block.rect.setFill(block.color);
-        }
+    function removeBlock(location) {
+        var block = game.blocks[location.y + 'x' + location.x];
+        block.rect.destroy();
+        delete game.blocks[location.y + 'x' + location.x];
     }
 
     function updateScore(block) {
-        outGame.score += block.config.score;
+        outGame.score += block.type.score;
         document.getElementById("score").value = outGame.score;
     }
 
     function processBonus(block) {
-        var bonusses = block.config.bonus;
+        var bonusses = block.type.bonus;
         for (var key in bonusses) {
             if (bonusses.hasOwnProperty(key)) {
                 var bonus = bonusses[key];
-                if (bonus == 'snake') {
-                    addSnakeBonus(block);
+                if (bonus == 'snakeadd') {
+                    snake.addBlock(block);
+                }
+                if (bonus == 'speedup') {
+                    snake.speedUp();
+                }
+                if (bonus == 'speeddown') {
+                    snake.speedDown();
                 }
             }
         }
+    }
+
+    function createNewBlock(type, location) {
+        var block = {
+            location: location,
+            type: type
+        };
+        block.rect = new Kinetic.Rect({
+            x: getCoordinates(location).x,
+            y: getCoordinates(location).y,
+            width: length,
+            height: length,
+            fill: block.type.color,
+            stroke: 'black',
+            strokeWidth: strokeWidth
+        });
+        bonusLayer.add(block.rect);
+        return block;
     }
 
     function setGame(inGame) {
         game = inGame;
         stage.setWidth((inGame.columns * totalLength) + (2 * init));
         stage.setHeight((inGame.rows * totalLength) + (2 * init));
-    }
-
-    function addSnakeBonus(block) {
-        snake.addBlock(block);
     }
 
     var snake = createSnake();
@@ -317,7 +369,7 @@ function createNewGame(stage, user, speed) {
         snake: snake,
         status: status,
         config: {
-            speed: speed
+            speed: inSpeed
         },
         start: function (e) {
             var keyCode = e.keyCode;
@@ -356,41 +408,44 @@ function createNewGame(stage, user, speed) {
             if (isUndefined(block)) {
                 return true;
             }
-            if (block.config.gameOver) {
+            if (block.type.gameOver) {
                 return false;
             }
+            removeBlock(block.location);
             updateScore(block);
             processBonus(block);
-            placeNextBlock(block);
-            colorNextBlock(block);
+
+            for (var i = 0; i < block.type.nextAmount; i++) {
+                placeNextBlock(block);
+            }
+
+            if (block.type.nextAmount == 'min') {
+                while (Object.keys(game.blocks).length <= game.minBlocks) {
+                    placeNextBlock(block);
+                }
+            }
 
             return true;
         },
         loadGame: function (inGame) {
             setGame(inGame);
-            var kineticLayer = new Kinetic.Layer({});
-            updateLayers.push(kineticLayer);
+            bonusLayer = new Kinetic.Layer({});
+            updateLayers.push(bonusLayer);
 
-            stage.add(kineticLayer);
+            stage.add(bonusLayer);
 
             for (var key in game.blocks) {
                 if (game.blocks.hasOwnProperty(key)) {
                     var block = game.blocks[key];
-                    var location = block.location;
-                    block.rect = new Kinetic.Rect({
-                        x: getCoordinates(location.y, location.x).x,
-                        y: getCoordinates(location.y, location.x).y,
-                        width: length,
-                        height: length,
-                        fill: block.color,
-                        stroke: 'black',
-                        strokeWidth: strokeWidth
-                    });
-                    kineticLayer.add(block.rect);
+                    var newBlock = createNewBlock(block.type, block.location);
+                    if (isNaN(newBlock.type.nextAmount)) {
+                        game.minBlocks++;
+                    }
+                    game.blocks[key] = newBlock;
                 }
             }
 
-            kineticLayer.draw();
+            bonusLayer.draw();
         }
     };
     document.addEventListener('keydown', outGame.start);
