@@ -3,7 +3,7 @@ function addTableSorter(tblName, defaultSortColumn, ascending) {
         var table = $("#" + tblName);
         table.tablesorter({
             sortList: [
-                [defaultSortColumn, ascending ? 0 : 1]
+                [getColumnIndex(tblName, defaultSortColumn), ascending ? 0 : 1]
             ]
         });
         table.on('sortEnd', function () {
@@ -12,6 +12,19 @@ function addTableSorter(tblName, defaultSortColumn, ascending) {
     } catch (e) {
 
     }
+}
+
+function getColumnIndex(tblName, clmName) {
+    var columns = $("#" + tblName).find("thead").find("th");
+    var clmIndex = 0;
+
+    columns.each(function (index, value) {
+        if (this.id == clmName) {
+            clmIndex = index;
+        }
+    });
+
+    return clmIndex;
 }
 
 function previousPage(tblName) {
@@ -60,9 +73,10 @@ function goToPage(tblName, index) {
     showCurrentPage(tblName);
 }
 
-function createTablePaginator(tblName) {
+function updateTablePaginator(tblName) {
     var nbrOfPages = getNbrOfPages(tblName);
     var paginator = getPaginator(tblName);
+    console.log(nbrOfPages);
     paginator.empty();
     var prev = createPaginatorItem(tblName, '<<', previousPage);
     $(prev).addClass('disabled');
@@ -118,7 +132,7 @@ function createPaginatorItem(tblName, text, fn) {
 }
 
 function showCurrentPage(tblName) {
-    var rows = getRows(tblName);
+    var rows = getFilteredRows(tblName);
     var rowsPerPage = getRowsPerPage(tblName);
     var currentPage = getCurrentPage(tblName);
     rows.each(function (index, value) {
@@ -172,14 +186,13 @@ function getCurrentPage(tblName) {
 function getPaginator(tblName) {
     return $("ul[data-paginator-table=" + tblName + "]");
 }
-
 /**
  * Counts the number of pages a table has, based on the number of rows visible on one page.
  * @param tblName
  * @returns {number}
  */
 function getNbrOfPages(tblName) {
-    var nbrOfRows = getNbrOfRows(tblName);
+    var nbrOfRows = getNbrOfFilteredRows(tblName);
     var rowsPerPage = getRowsPerPage(tblName);
     return Math.ceil(nbrOfRows / rowsPerPage);
 }
@@ -197,6 +210,10 @@ function getNbrOfRows(tblName) {
     return getRows(tblName).length;
 }
 
+function getNbrOfFilteredRows(tblName) {
+    return getFilteredRows(tblName).length;
+}
+
 /**
  * Get all rows of a table.
  * @param tblName
@@ -206,6 +223,12 @@ function getRows(tblName) {
     return $("#" + tblName).find("tbody").find("tr");
 }
 
+function getFilteredRows(tblName) {
+    return $($.grep(getRows(tblName), function (value) {
+        return $(value).find("td[data-filtered=true]").length == 0;
+    }));
+}
+
 /**
  * The number of rows currently visible.
  * @param tblName
@@ -213,4 +236,9 @@ function getRows(tblName) {
  */
 function getNbrOfVisibleRows(tblName) {
     return $("#" + tblName).find("tbody").find("tr:visible").length;
+}
+
+function getSelectedRow(tblName) {
+    var rows = getRows(tblName);
+    return rows.filter('.info');
 }

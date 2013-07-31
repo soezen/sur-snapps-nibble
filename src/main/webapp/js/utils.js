@@ -6,9 +6,9 @@ function objectHasKey(object, key) {
     return !isUndefined(object[key]);
 }
 
-function arrayContains(array, element) {
+function arrayContains(array, key, element) {
     for (var i = 0; i < array.length; i++) {
-        if (element.toLowerCase() === array[i].toLowerCase()) {
+        if (element.toLowerCase() === array[i][key].toLowerCase()) {
             return true;
         }
     }

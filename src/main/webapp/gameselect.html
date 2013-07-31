@@ -3,7 +3,7 @@
         <label for="games" class="control-label">Game</label>
 
         <div class="controls">
-            <select id="games"></select>
+            <select id="games" onselect="updateGameDetails()"></select>
         </div>
     </div>
     <div class="control-group">
@@ -11,12 +11,22 @@
             <a class="btn" data-page="game" onclick="loadGame(this)">Play</a>
         </div>
     </div>
+    <div class="control-group"></div>
+    <div class="control-group">
+        <label for="dimensions" class="control-label">Dimensions</label>
+
+        <div class="controls">
+            <input type="text" disabled id="dimensions"/>
+        </div>
+    </div>
 </div>
 
-<script src="js/game.js"></script>
+<script src="js/gameplay.js"></script>
 <script>
+    // TODO SUR show details of selected game
     $(document).ready(function () {
         createTestGame(20, 20);
         loadOptions('games', gameStorage.getGames());
+        updateGameDetails();
     });
 </script>

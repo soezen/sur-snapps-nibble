@@ -18,6 +18,7 @@ function createLeaderboardRow(tbl, values) {
         $(row).addClass("warning");
     }
 
+    appendCell(row, getPlaceInLeaderboard(values.score), false);
     appendCell(row, values.time, false);
     appendCell(row, values.user, false);
     appendCell(row, values.game, false);
@@ -25,6 +26,22 @@ function createLeaderboardRow(tbl, values) {
     appendCell(row, values.score, false);
 
     tbl.append(row);
+}
+
+function getPlaceInLeaderboard(score) {
+    var scores = gameStorage.getScores();
+    var scoreIndex = -1;
+    scores.sort(function (a, b) {
+        return a.score < b.score;
+    });
+
+    $(scores).each(function (index, value) {
+        if (this.score == score) {
+            scoreIndex = index + 1;
+        }
+    });
+
+    return scoreIndex;
 }
 
 // TODO SUR remove column speed and replace with game config details (as detail row)

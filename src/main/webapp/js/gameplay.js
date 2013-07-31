@@ -68,6 +68,7 @@ var types = {
     }
 };
 
+// TODO SUR remove this?
 function loadGame(menuItem) {
     var gameSelect = document.getElementById("games");
     var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
@@ -75,39 +76,11 @@ function loadGame(menuItem) {
     openPage(menuItem);
 }
 
-// TODO SUR remove this
-function createTestGame(rows, columns) {
-    var blocks = {};
-
-    for (var row = 0; row < rows; row++) {
-        blocks[row + 'x' + 0] = createNewBlock(types.wall, { x: 0, y: row });
-        blocks[row + 'x' + (columns - 1)] = createNewBlock(types.wall, { x: columns - 1, y: row });
-    }
-    for (var col = 1; col < columns - 1; col++) {
-        blocks[0 + 'x' + col] = createNewBlock(types.wall, { x: col, y: 0 });
-        blocks[(rows - 1) + 'x' + col] = createNewBlock(types.wall, { x: col, y: rows - 1 });
-    }
-
-    var randomType = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-    console.log(randomType);
-    blocks['7x10'] = createNewBlock(types[randomType.name], { x: 10, y: 7 });
-
-    var storage = JSON.parse(localStorage.snakeGame);
-    var games = storage.games;
-    if (isUndefined(games)) {
-        games = {};
-    }
-    // TODO SUR when creating game by gui, id and label are determined by gui, use id as key of object
-    games.test = {
-        id: 'test',
-        label: 'test',
-        blocks: blocks,
-        rows: 20,
-        columns: 20,
-        minBlocks: 0
-    };
-    storage.games = games;
-    localStorage.snakeGame = JSON.stringify(storage);
+function updateGameDetails() {
+    var gameSelect = document.getElementById("games");
+    var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
+    var game = gameStorage.getGames()[currentGame];
+    document.getElementById("dimensions").value = game.rows + 'x' + game.columns;
 }
 
 function createNewBlock(type, location) {
@@ -130,13 +103,6 @@ function createNewGame(stage, user, inSpeed) {
     var length = 8;
     var strokeWidth = 1;
     var totalLength = length + (2 * strokeWidth);
-
-    function getCoordinates(location) {
-        return {
-            x: init + (location.x * totalLength),
-            y: init + (location.y * totalLength)
-        };
-    }
 
     function createSnake() {
         var snakeLayer = new Kinetic.Layer({});
@@ -179,8 +145,8 @@ function createNewGame(stage, user, inSpeed) {
             var location = newLocation;
             var blockDirection = false;
             var rect = new Kinetic.Rect({
-                x: getCoordinates(location).x,
-                y: getCoordinates(location).y,
+                x: getCoordinates(init, totalLength, location).x,
+                y: getCoordinates(init, totalLength, location).y,
                 width: length,
                 height: length,
                 fill: fillColor,
@@ -207,9 +173,9 @@ function createNewGame(stage, user, inSpeed) {
                     if (outGame.onLocation(newLocation)) {
                         location = newLocation;
                         //noinspection JSUnresolvedFunction
-                        rect.setX(getCoordinates(location).x);
+                        rect.setX(getCoordinates(init, totalLength, location).x);
                         //noinspection JSUnresolvedFunction
-                        rect.setY(getCoordinates(location).y);
+                        rect.setY(getCoordinates(init, totalLength, location).y);
 
                         if (next) {
                             others.push(location);
@@ -375,8 +341,8 @@ function createNewGame(stage, user, inSpeed) {
             type: type
         };
         block.rect = new Kinetic.Rect({
-            x: getCoordinates(location).x,
-            y: getCoordinates(location).y,
+            x: getCoordinates(init, totalLength, location).x,
+            y: getCoordinates(init, totalLength, location).y,
             width: length,
             height: length,
             fill: block.type.color,
@@ -391,6 +357,12 @@ function createNewGame(stage, user, inSpeed) {
         game = inGame;
         stage.setWidth((inGame.columns * totalLength) + (2 * init));
         stage.setHeight((inGame.rows * totalLength) + (2 * init));
+    }
+
+    function placeMinBlocks(block) {
+        while (Object.keys(game.blocks).length <= game.minBlocks) {
+            placeNextBlock(block);
+        }
     }
 
     var snake = createSnake();
@@ -474,9 +446,7 @@ function createNewGame(stage, user, inSpeed) {
             }
 
             if (block.type.nextAmount == 'min') {
-                while (Object.keys(game.blocks).length <= game.minBlocks) {
-                    placeNextBlock(block);
-                }
+                placeMinBlocks(block);
             }
 
             return true;
@@ -498,7 +468,12 @@ function createNewGame(stage, user, inSpeed) {
                     game.blocks[key] = newBlock;
                 }
             }
-
+            placeMinBlocks({
+                type: {
+                    next: 'random',
+                    nextTypes: bonusTypes
+                }
+            });
             bonusLayer.draw();
         }
     };

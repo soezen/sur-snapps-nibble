@@ -19,6 +19,11 @@ function GameStorage() {
         }
         return games;
     };
+    this.addGame = function (game) {
+        var storage = getStorage();
+        storage.games[game.id] = game;
+        saveStorage(storage);
+    };
     this.getUsers = function () {
         var storage = getStorage();
         var users = [];

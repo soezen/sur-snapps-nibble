@@ -14,10 +14,10 @@
                     <label class="control-label" for="filterDateAfter">Date between</label>
 
                     <div class="controls form-inline">
-                        <input id="filterDateAfter" class="input-small" type="date" data-filtercolumn="0"
+                        <input id="filterDateAfter" class="input-small" type="date" data-filtercolumn="clmdate"
                                data-filtertype="interval-start"/>
                         <label for="filterDateBefore">and</label>
-                        <input id="filterDateBefore" class="input-small" type="date" data-filtercolumn="0"
+                        <input id="filterDateBefore" class="input-small" type="date" data-filtercolumn="clmdate"
                                data-filtertype="interval-end"/>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                     <label class="control-label" for="filteruser">User</label>
 
                     <div class="controls">
-                        <input id="filteruser" type="search" list="usernames" data-filtercolumn="1"
+                        <input id="filteruser" type="search" list="usernames" data-filtercolumn="clmuser"
                                data-filtertype="text"/>
                     </div>
                 </div>
@@ -33,7 +33,8 @@
                     <label class="control-label" for="filtergame">Game</label>
 
                     <div class="controls">
-                        <input id="filtergame" type="search" list="games" data-filtercolumn="2" data-filtertype="text"/>
+                        <input id="filtergame" type="search" list="games" data-filtercolumn="clmgame"
+                               data-filtertype="text"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -43,10 +44,10 @@
                         <div class="well-small">
                             between
                             <input id="minspeed" type="number" class="input-mini" value="0"
-                                   data-filtertype="interval-start" data-filtercolumn="3"/>
+                                   data-filtertype="interval-start" data-filtercolumn="clmspeed"/>
                             and
                             <input id="maxspeed" type="number" class="input-mini" value="11"
-                                   data-filtertype="interval-end" data-filtercolumn="3"/></div>
+                                   data-filtertype="interval-end" data-filtercolumn="clmspeed"/></div>
                         <div id="speedrange" class="span2"></div>
                     </div>
                 </div>
@@ -57,10 +58,10 @@
                         <div class="well-small">
                             between
                             <input type="number" id="minscore" class="input-mini" value="0"
-                                   data-filtertype="interval-start" data-filtercolumn="4"/>
+                                   data-filtertype="interval-start" data-filtercolumn="clmscore"/>
                             and
                             <input id="maxscore" type="number" class="input-mini" data-filtertype="interval-end"
-                                   data-filtercolumn="4"/></div>
+                                   data-filtercolumn="clmscore"/></div>
                         <div id="scorerange" class="span2"></div>
                     </div>
                 </div>
@@ -71,11 +72,12 @@
 <table id="tblScores" class="tablesorter table table-hover table-bordered table-condensed">
     <thead>
     <tr>
-        <th data-filtertype="date" data-filterrange="[0, 10]">Date</th>
-        <th data-filtertype="text">User</th>
-        <th data-filtertype="text">Game</th>
-        <th data-filtertype="number" data-filterrange="[0, 2]">Speed</th>
-        <th data-filtertype="number">Score</th>
+        <th></th>
+        <th id="clmdate" data-filtertype="date" data-filterrange="[0, 10]">Date</th>
+        <th id="clmuser" data-filtertype="text">User</th>
+        <th id="clmgame" data-filtertype="text">Game</th>
+        <th id="clmspeed" data-filtertype="number" data-filterrange="[0, 2]">Speed</th>
+        <th id="clmscore" data-filtertype="number">Score</th>
     </tr>
     </thead>
     <tbody>
@@ -103,7 +105,7 @@
         configureSpeedSlider('tblScores');
         configureScoreSlider('tblScores');
         loadLeaderboard();
-        createTablePaginator('tblScores');
-        addTableSorter('tblScores', 4, false);
+        updateTablePaginator('tblScores');
+        addTableSorter('tblScores', 'clmscore', false);
     });
 </script>

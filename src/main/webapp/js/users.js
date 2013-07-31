@@ -78,6 +78,7 @@ function validateUser($el, value, callback) {
         valid = false;
         message = 'Username already exists'
     }
+    console.log(valid);
     callback({
         value: value,
         valid: valid,
@@ -87,7 +88,7 @@ function validateUser($el, value, callback) {
 
 function userNotUnique(value) {
     var users = gameStorage.getUsers();
-    if (arrayContains(users, value)) {
+    if (arrayContains(users, 'id', value)) {
         return true;
     }
     return false;
