@@ -8,11 +8,6 @@ function loadGames() {
             createGamesRow(tbody, games[key]);
         }
     }
-
-    createGamesRow(tbody, { id: 'surrounded', label: 'Surrounded', rows: 20, columns: 10 });
-    createGamesRow(tbody, { id: 'free', label: 'Free', rows: 10, columns: 20 });
-    createGamesRow(tbody, { id: 'line', label: 'Line', rows: 15, columns: 20 });
-    createGamesRow(tbody, { id: 'double-line', label: 'Double Line', rows: 20, columns: 15 });
 }
 
 function createGamesRow(tbl, values) {
@@ -35,6 +30,15 @@ function playGame(menuItem) {
     if (!isUndefined(selectedRow) && selectedRow.size() > 0) {
         var game = selectedRow.data("gameid");
         gameSession.setCurrentGame(game);
+        openPage(menuItem);
+    }
+}
+
+function removeGame(menuItem) {
+    var selectedRow = getSelectedRow('tblGames');
+    if (!isUndefined(selectedRow) && selectedRow.size() > 0) {
+        var game = selectedRow.data('gameid');
+        gameStorage.removeGame(game);
         openPage(menuItem);
     }
 }

@@ -15,7 +15,7 @@ function filter(tblName, input) {
         var column = {
             name: columnName,
             index: columnIndex
-        }
+        };
         var dataType = getFilterConfig(tblName, 'filtertype', column.index);
 
         filterColumns(tblName, column.index, getFilter(input, column, dataType));

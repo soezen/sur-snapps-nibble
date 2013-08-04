@@ -1,73 +1,3 @@
-var SnakeStatus = {
-    RUNNING: 'RUNNING',
-    PAUSED: 'PAUSED',
-    ENDED: 'ENDED',
-    NEW: 'NEW'};
-var Direction = {
-    RIGHT: 'RIGHT',
-    DOWN: 'DOWN',
-    LEFT: 'LEFT',
-    UP: 'UP'};
-
-// TODO SUR maxBlocks on field
-var bonusTypes = [
-    { name: 'speedup', chance: 0.5},
-    { name: 'speeddown', chance: 0.05 },
-    { name: 'snakeadd', chance: 0.4 },
-    { name: 'snakeremove', chance: 0.02 },
-    { name: 'nothing', chance: 0.3 }
-];
-var types = {
-    speedup: {
-        score: 5,
-        gameOver: false,
-        color: 'red',
-        bonus: ['speedup'],
-        next: ['random'],
-        nextAmount: 1,
-        nextTypes: bonusTypes
-    },
-    speeddown: {
-        score: 1,
-        gameOver: false,
-        color: 'yellow',
-        bonus: ['snakeadd', 'speeddown'],
-        next: ['random'],
-        nextAmount: 1,
-        nextTypes: bonusTypes
-    },
-    snakeadd: {
-        score: 3,
-        gameOver: false,
-        color: 'lightgreen',
-        bonus: ['snakeadd'],
-        next: ['random'],
-        nextAmount: 2,
-        nextTypes: bonusTypes
-    },
-    snakeremove: {
-        score: 10,
-        gameOver: false,
-        color: 'blue',
-        bonus: ['snakeremove'],
-        next: ['random'],
-        nextAmount: 3,
-        nextTypes: bonusTypes
-    },
-    nothing: {
-        score: 1,
-        gameOver: false,
-        color: 'orange',
-        next: ['random'],
-        nextAmount: 'min',
-        nextTypes: bonusTypes
-    },
-    wall: {
-        gameOver: true,
-        color: 'black'
-    }
-};
-
 // TODO SUR remove this?
 function loadGame(menuItem) {
     var gameSelect = document.getElementById("games");
@@ -83,31 +13,29 @@ function updateGameDetails() {
     document.getElementById("dimensions").value = game.rows + 'x' + game.columns;
 }
 
-function createNewBlock(type, location) {
-    return {
-        type: type,
-        location: location
-    };
-}
-
 function createNewGame(stage, user, inSpeed) {
     var bonusLayer = new Kinetic.Layer({});
-    var updateLayers = [];
+    var snakeLayer = new Kinetic.Layer({});
+    stage.add(snakeLayer);
+    var updateLayers = [ snakeLayer, bonusLayer ];
+    var currentLevel = 0;
     var game = {
-        blocks: {},
+        levels: [],
         rows: 0,
         columns: 0,
         minBlocks: 0
     };
-    var init = 2;
-    var length = 8;
-    var strokeWidth = 1;
-    var totalLength = length + (2 * strokeWidth);
+
+    function getLevel(lvl) {
+        return game.levels[lvl];
+    }
+
+    function isLastLevel() {
+        return currentLevel == game.levels.length - 1;
+    }
 
     function createSnake() {
-        var snakeLayer = new Kinetic.Layer({});
-        stage.add(snakeLayer);
-        updateLayers.push(snakeLayer);
+        snakeLayer.destroyChildren();
         var snakeGroup = new Kinetic.Group({});
         snakeLayer.add(snakeGroup);
 
@@ -268,7 +196,7 @@ function createNewGame(stage, user, inSpeed) {
     }
 
     function isLocationFree(location) {
-        return !objectHasKey(game.blocks, location.y + 'x' + location.x)
+        return !objectHasKey(getLevel(currentLevel).blocks, location.y + 'x' + location.x)
             && !containsLocation(snake.blocks, location);
     }
 
@@ -300,18 +228,26 @@ function createNewGame(stage, user, inSpeed) {
         if (block.type.next == 'random') {
             newType = types[getNextBonusType(block)];
         }
-        game.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
+        getLevel(currentLevel).blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
     }
 
     function removeBlock(location) {
-        var block = game.blocks[location.y + 'x' + location.x];
+        var block = getLevel(currentLevel).blocks[location.y + 'x' + location.x];
         block.rect.destroy();
-        delete game.blocks[location.y + 'x' + location.x];
+        delete getLevel(currentLevel).blocks[location.y + 'x' + location.x];
     }
 
     function updateScore(block) {
-        outGame.score += block.type.score;
-        document.getElementById("score").value = outGame.score;
+        outGame.stats.score += block.type.score;
+    }
+
+    function updateBlocks() {
+        outGame.stats.blocks++;
+    }
+
+    function updateStats() {
+        document.getElementById("blocks").value = outGame.stats.blocks;
+        document.getElementById("score").value = outGame.stats.score;
     }
 
     function processBonus(block) {
@@ -355,14 +291,55 @@ function createNewGame(stage, user, inSpeed) {
 
     function setGame(inGame) {
         game = inGame;
-        stage.setWidth((inGame.columns * totalLength) + (2 * init));
-        stage.setHeight((inGame.rows * totalLength) + (2 * init));
+        stage.setWidth(getCanvasWidth(game.columns));
+        stage.setHeight(getCanvasHeight(game.rows));
     }
 
-    function placeMinBlocks(block) {
-        while (Object.keys(game.blocks).length <= game.minBlocks) {
+    function placeMinBlocks(level, block) {
+
+        while (Object.keys(level.blocks).length <= level.minBlocks) {
             placeNextBlock(block);
         }
+    }
+
+    function loadLevel(lvl) {
+        bonusLayer.destroyChildren();
+        var level = getLevel(lvl);
+
+        for (var key in level.blocks) {
+            if (level.blocks.hasOwnProperty(key)) {
+                var block = level.blocks[key];
+
+                var newBlock = createNewBlock(block.type, block.location);
+                if (isNaN(newBlock.type.nextAmount)) {
+                    level.minBlocks++;
+                }
+                level.blocks[key] = newBlock;
+            }
+        }
+
+        placeMinBlocks(level, {
+            type: {
+                next: 'random',
+                nextTypes: bonusTypes
+            }
+        });
+        console.log('level loaded');
+    }
+
+    function isGoalReached() {
+        var goal = getLevel(currentLevel).goal;
+        var reached = false;
+
+        if (goal.type == 'points') {
+            return outGame.stats.score >= goal.amount;
+        } else if (goal.type == 'blocks') {
+            return outGame.stats.blocks >= goal.amount;
+        } else if (goal.type == 'time') {
+            // TODO SUR implement and also show on screen
+        }
+
+        return reached;
     }
 
     var snake = createSnake();
@@ -377,9 +354,9 @@ function createNewGame(stage, user, inSpeed) {
             gameStorage.addGameScore({
                 time: getTime(),
                 user: outGame.user,
-                game: game.id,
+                game: game.label,
                 speed: outGame.config.speed,
-                score: outGame.score
+                score: outGame.stats.score
             });
             console.log('game over');
         }
@@ -391,8 +368,10 @@ function createNewGame(stage, user, inSpeed) {
 
     var outGame = {
         user: user,
-        score: 0,
-        snake: snake,
+        stats: {
+            score: 0,
+            blocks: 0
+        },
         status: status,
         config: {
             speed: inSpeed
@@ -417,8 +396,6 @@ function createNewGame(stage, user, inSpeed) {
                     status = SnakeStatus.PAUSED;
                     snakeMove.stop();
                 } else if (status == SnakeStatus.ENDED) {
-                    document.getElementById("container").innerHTML = "";
-                    document.getElementById("config").style.display = "block";
                     document.removeEventListener('keydown', game.start);
                 } else if (status == SnakeStatus.PAUSED) {
                     status = SnakeStatus.RUNNING;
@@ -430,25 +407,38 @@ function createNewGame(stage, user, inSpeed) {
             }
         },
         onLocation: function (location) {
-            var block = game.blocks[location.y + 'x' + location.x];
+            var block = getLevel(currentLevel).blocks[location.y + 'x' + location.x];
             if (isUndefined(block)) {
                 return true;
             }
             if (block.type.gameOver) {
                 return false;
             }
+            updateBlocks();
             removeBlock(block.location);
             updateScore(block);
             processBonus(block);
+            updateStats();
+            if (isGoalReached()) {
+                console.log('level completed');
+                this.status = SnakeStatus.PAUSED;
+                outGame.stats.blocks = 0;
+                snakeMove.stop();
+                if (!isLastLevel()) {
+                    currentLevel++;
+                    loadLevel(currentLevel);
+                    snake = createSnake();
+                    snakeLayer.draw();
+                }
+            }
 
             for (var i = 0; i < block.type.nextAmount; i++) {
                 placeNextBlock(block);
             }
 
             if (block.type.nextAmount == 'min') {
-                placeMinBlocks(block);
+                placeMinBlocks(getLevel(currentLevel), block);
             }
-
             return true;
         },
         loadGame: function (inGame) {
@@ -457,23 +447,7 @@ function createNewGame(stage, user, inSpeed) {
             updateLayers.push(bonusLayer);
 
             stage.add(bonusLayer);
-
-            for (var key in game.blocks) {
-                if (game.blocks.hasOwnProperty(key)) {
-                    var block = game.blocks[key];
-                    var newBlock = createNewBlock(block.type, block.location);
-                    if (isNaN(newBlock.type.nextAmount)) {
-                        game.minBlocks++;
-                    }
-                    game.blocks[key] = newBlock;
-                }
-            }
-            placeMinBlocks({
-                type: {
-                    next: 'random',
-                    nextTypes: bonusTypes
-                }
-            });
+            loadLevel(currentLevel);
             bonusLayer.draw();
         }
     };

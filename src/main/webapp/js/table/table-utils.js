@@ -18,7 +18,7 @@ function getColumnIndex(tblName, clmName) {
     var columns = $("#" + tblName).find("thead").find("th");
     var clmIndex = 0;
 
-    columns.each(function (index, value) {
+    columns.each(function (index) {
         if (this.id == clmName) {
             clmIndex = index;
         }
@@ -135,7 +135,7 @@ function showCurrentPage(tblName) {
     var rows = getFilteredRows(tblName);
     var rowsPerPage = getRowsPerPage(tblName);
     var currentPage = getCurrentPage(tblName);
-    rows.each(function (index, value) {
+    rows.each(function (index) {
         if (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) {
             this.style.display = "table-row";
         } else {

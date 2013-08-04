@@ -35,7 +35,7 @@ function getPlaceInLeaderboard(score) {
         return a.score < b.score;
     });
 
-    $(scores).each(function (index, value) {
+    $(scores).each(function (index) {
         if (this.score == score) {
             scoreIndex = index + 1;
         }

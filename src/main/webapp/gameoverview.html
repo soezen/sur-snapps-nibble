@@ -7,7 +7,7 @@
         <table id="tblGames" class="tablesorter table table-hover table-bordered table-condensed">
             <thead>
             <tr>
-                <th data-filtertype="text">Name</th>
+                <th id="game-name" data-filtertype="text">Name</th>
                 <th data-fitlertype="number">Rows</th>
                 <th data-filtertype="number">Columns</th>
             </tr>
@@ -27,16 +27,19 @@
             <a href="#" class="btn btn-small" data-page="gameplay" onclick="playGame(this)">
                 <i class="icon-play"></i>
             </a>
-            <a href="#" data-page="gamenew" class="btn btn-small" onclick="openPage(this)">
+            <a href="#" data-page="gamewizard" class="btn btn-small" onclick="openPage(this)">
                 <i class="icon-asterisk"></i>
+            </a>
+            <a href="#" data-page="gameoverview" onclick="removeGame(this)" class="btn btn-small">
+                <i class="icon-remove"></i>
             </a>
         </div>
     </div>
 </div>
 
-<script src="js/table-utils.js"></script>
-<script src="js/filter.js"></script>
-<script src="js/gameoverview.js"></script>
+<script src="js/table/table-utils.js"></script>
+<script src="js/table/table-filter.js"></script>
+<script src="js/game/game-overview.js"></script>
 <script>
     // TODO SUR create filters for table
     // TODO SUR click on row to show details (as details-row)
@@ -44,6 +47,6 @@
     $(document).ready(function () {
         loadGames();
         updateTablePaginator('tblGames');
-        addTableSorter('tblGames', 0, true);
+        addTableSorter('tblGames', 'game-name', true);
     });
 </script>

@@ -24,6 +24,13 @@ function GameStorage() {
         storage.games[game.id] = game;
         saveStorage(storage);
     };
+    this.removeGame = function (id) {
+        var storage = getStorage();
+        var games = this.getGames();
+        delete games[id];
+        storage.games = games;
+        saveStorage(storage);
+    };
     this.getUsers = function () {
         var storage = getStorage();
         var users = [];

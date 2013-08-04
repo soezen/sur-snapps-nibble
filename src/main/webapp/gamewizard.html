@@ -1,0 +1,113 @@
+<legend>
+    New Game
+</legend>
+<!-- TODO SUR when game ends, show other page or something else, offer to play again -->
+<div id="wzdgame" class="row-fluid">
+    <div data-wizardpage="wzd-main" class="span10" style="margin-left:0">
+        <form id="wzd-main" novalidate="novalidate">
+            <div class="form form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="name">Name</label>
+
+                    <div class="controls">
+                        <input type="text" id="name" data-validation-callback-callback="validateGameName" required
+                               autocomplete="off" data-validation-required-message="Name is required"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="rows">Dimensions</label>
+
+                    <div class="controls">
+                        <input type="number" value="10" min="10" id="rows" class="input-small" required
+                               data-validation-required-message="Number of Rows is required"/>
+                        x
+                        <input type="number" value="10" min="10" id="columns" class="input-small" required
+                               data-validation-required-message="Number of Columns is required"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="nbrlevels">Number of Levels</label>
+
+                    <div class="controls">
+                        <input type="number" id="nbrlevels" value="1" min="1" class="input-mini" required
+                               data-validation-required-message="Number of Levels is required"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div data-wizardpage="wzd-levels" class="span10 hide" style="margin-left:0" data-loadfunction="loadLevels">
+        <form id="wzd-levels" novalidate="novalidate">
+            <div class="accordion" id="acclevels">
+                <div class="accordion-group hide">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#acclevels"
+                           href="#level">Level</a>
+                    </div>
+                    <div id="level" class="accordion-body collapse form form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label">Walls</label>
+
+                            <div id="cnvlevel" class="controls"></div>
+                        </div>
+                        <div class="control-group">
+                            <label for="goalamountlevel" class="control-label">Goal</label>
+
+                            <div class="controls">
+                                <!-- TODO SUR make required if it is not last level -->
+                                <input id="goalamountlevel" type="number" class="input-mini"/>
+                                <select id="goaltypelevel">
+                                    <option value="none"></option>
+                                    <option value="blocks">Blocks</option>
+                                    <option value="points">Points</option>
+                                    <option value="time">Time</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="span2 btn-group-vertical">
+        <input type="submit" class="btn btn-block btn-primary" value="Next" form="wzd-main" data-wizardmenu="wzd-main"/>
+        <input type="submit" class="btn btn-block btn-primary hide" value="Create" form="wzd-levels"
+               data-wizardmenu="wzd-levels"/>
+        <a href="#" class="btn btn-block">Reset</a>
+        <a href="#" class="btn btn-block hide" onclick="previousStep()" data-wizardmenu="wzd-levels">Back</a>
+        <a href="#" class="btn btn-block" onclick="cancelCreateGame(this)" data-page="gameoverview">Cancel</a>
+    </div>
+</div>
+
+<script src="js/kineticjs/kinetic-v4.5.4.js"></script>
+<script src="js/game/game-utils.js"></script>
+<script src="js/game/game-wizard.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#wzd-main").find("input").not("[type=reset]").jqBootstrapValidation({
+            preventSubmit: true,
+            submitSuccess: function ($form, event) {
+                event.preventDefault();
+                createTemporaryGame();
+            },
+            filter: function () {
+                return $(this).is(":visible");
+            }
+        });
+
+        $("#wzd-levels").find("input, select").not("[type=reset]").jqBootstrapValidation({
+            preventSubmit: true,
+            submitSuccess: function ($form, event) {
+                createGame();
+                openPage({
+                    dataset: {
+                        page: 'gameoverview'
+                    }
+                });
+            },
+            filter: function () {
+                return $(this).is(":visible");
+            }
+        });
+    });
+</script>
