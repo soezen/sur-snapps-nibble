@@ -1,37 +1,42 @@
-// TODO SUR remove this?
-function loadGame(menuItem) {
-    var gameSelect = document.getElementById("games");
-    var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
-    gameSession.setCurrentGame(currentGame);
-    openPage(menuItem);
+var currentUser = gameSession.getCurrentUser();
+var currentGame;
+var currentLevel = 0;
+
+function getCurrentLevel() {
+    return currentGame.levels[currentLevel];
 }
 
-function updateGameDetails() {
-    var gameSelect = document.getElementById("games");
-    var currentGame = gameSelect.options[gameSelect.selectedIndex].value;
-    var game = gameStorage.getGames()[currentGame];
-    document.getElementById("dimensions").value = game.rows + 'x' + game.columns;
+function isLastLevel() {
+    return currentLevel == currentGame.levels.length - 1;
 }
 
-function createNewGame(stage, user, inSpeed) {
-    var bonusLayer = new Kinetic.Layer({});
-    var snakeLayer = new Kinetic.Layer({});
-    stage.add(snakeLayer);
-    var updateLayers = [ snakeLayer, bonusLayer ];
-    var currentLevel = 0;
-    var game = {
-        levels: [],
-        rows: 0,
-        columns: 0,
-        minBlocks: 0
-    };
-
-    function getLevel(lvl) {
-        return game.levels[lvl];
+function containsLocation(array, element) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i].x == element.x
+            && array[i].y == element.y) {
+            return true;
+        }
     }
+    return false;
+}
 
-    function isLastLevel() {
-        return currentLevel == game.levels.length - 1;
+function loadLevel(stage, level) {
+    var snakeLayer;
+    var bonusLayer;
+    var updateLayers;
+
+    function loadStage() {
+        stage.destroyChildren();
+
+        var layer = new Kinetic.Layer({});
+        layer.add(new Kinetic.Rect({ x: 0, y: 0, height: stage.getHeight(), width: stage.getWidth(), fill: 'darkgray'}));
+        stage.add(layer);
+
+        bonusLayer = new Kinetic.Layer({});
+        snakeLayer = new Kinetic.Layer({});
+        stage.add(snakeLayer);
+        stage.add(bonusLayer);
+        updateLayers = [ snakeLayer, bonusLayer ];
     }
 
     function createSnake() {
@@ -53,13 +58,13 @@ function createNewGame(stage, user, inSpeed) {
                 }
 
                 if (newLocation.x < 0) {
-                    newLocation.x = game.columns - 1;
-                } else if (newLocation.x > game.columns - 1) {
+                    newLocation.x = currentGame.columns - 1;
+                } else if (newLocation.x > currentGame.columns - 1) {
                     newLocation.x = 0;
                 }
                 if (newLocation.y < 0) {
-                    newLocation.y = game.rows - 1;
-                } else if (newLocation.y > game.rows - 1) {
+                    newLocation.y = currentGame.rows - 1;
+                } else if (newLocation.y > currentGame.rows - 1) {
                     newLocation.y = 0;
                 }
                 return newLocation;
@@ -73,8 +78,8 @@ function createNewGame(stage, user, inSpeed) {
             var location = newLocation;
             var blockDirection = false;
             var rect = new Kinetic.Rect({
-                x: getCoordinates(init, totalLength, location).x,
-                y: getCoordinates(init, totalLength, location).y,
+                x: getCoordinates(location).x,
+                y: getCoordinates(location).y,
                 width: length,
                 height: length,
                 fill: fillColor,
@@ -98,12 +103,12 @@ function createNewGame(stage, user, inSpeed) {
                         return false;
                     }
 
-                    if (outGame.onLocation(newLocation)) {
+                    if (game.onLocation(newLocation)) {
                         location = newLocation;
                         //noinspection JSUnresolvedFunction
-                        rect.setX(getCoordinates(init, totalLength, location).x);
+                        rect.setX(getCoordinates(location).x);
                         //noinspection JSUnresolvedFunction
-                        rect.setY(getCoordinates(init, totalLength, location).y);
+                        rect.setY(getCoordinates(location).y);
 
                         if (next) {
                             others.push(location);
@@ -143,7 +148,7 @@ function createNewGame(stage, user, inSpeed) {
         // TODO SUR show game config in leaderboard
 
         var stepCount = 0;
-        var speed = inSpeed;
+        var speed = 10; // TODO SUR change this
         var head = createSnakeBlock({ x: 1, y: 1 });
         var snake = {
             blocks: [],
@@ -185,26 +190,16 @@ function createNewGame(stage, user, inSpeed) {
         return snake;
     }
 
-    function containsLocation(array, element) {
-        for (var i = 0; i < array.length; i++) {
-            if (array[i].x == element.x
-                && array[i].y == element.y) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     function isLocationFree(location) {
-        return !objectHasKey(getLevel(currentLevel).blocks, location.y + 'x' + location.x)
+        return !objectHasKey(level.blocks, location.y + 'x' + location.x)
             && !containsLocation(snake.blocks, location);
     }
 
     function getRandomFreeLocation() {
         var location = {};
         do {
-            location.x = Math.floor(Math.random() * game.columns);
-            location.y = Math.floor(Math.random() * game.rows);
+            location.x = Math.floor(Math.random() * currentGame.columns);
+            location.y = Math.floor(Math.random() * currentGame.rows);
         } while (!isLocationFree(location));
         return location;
     }
@@ -228,26 +223,26 @@ function createNewGame(stage, user, inSpeed) {
         if (block.type.next == 'random') {
             newType = types[getNextBonusType(block)];
         }
-        getLevel(currentLevel).blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
+        level.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
     }
 
     function removeBlock(location) {
-        var block = getLevel(currentLevel).blocks[location.y + 'x' + location.x];
+        var block = level.blocks[location.y + 'x' + location.x];
         block.rect.destroy();
-        delete getLevel(currentLevel).blocks[location.y + 'x' + location.x];
+        delete level.blocks[location.y + 'x' + location.x];
     }
 
     function updateScore(block) {
-        outGame.stats.score += block.type.score;
+        currentGame.stats.score += block.type.score;
     }
 
     function updateBlocks() {
-        outGame.stats.blocks++;
+        currentGame.stats.blocks++;
     }
 
     function updateStats() {
-        document.getElementById("blocks").value = outGame.stats.blocks;
-        document.getElementById("score").value = outGame.stats.score;
+        document.getElementById("blocks").value = currentGame.stats.blocks;
+        document.getElementById("score").value = currentGame.stats.score;
     }
 
     function processBonus(block) {
@@ -277,8 +272,8 @@ function createNewGame(stage, user, inSpeed) {
             type: type
         };
         block.rect = new Kinetic.Rect({
-            x: getCoordinates(init, totalLength, location).x,
-            y: getCoordinates(init, totalLength, location).y,
+            x: getCoordinates(location).x,
+            y: getCoordinates(location).y,
             width: length,
             height: length,
             fill: block.type.color,
@@ -289,22 +284,14 @@ function createNewGame(stage, user, inSpeed) {
         return block;
     }
 
-    function setGame(inGame) {
-        game = inGame;
-        stage.setWidth(getCanvasWidth(game.columns));
-        stage.setHeight(getCanvasHeight(game.rows));
-    }
-
-    function placeMinBlocks(level, block) {
-
+    function placeMinBlocks(block) {
         while (Object.keys(level.blocks).length <= level.minBlocks) {
             placeNextBlock(block);
         }
     }
 
-    function loadLevel(lvl) {
+    function load() {
         bonusLayer.destroyChildren();
-        var level = getLevel(lvl);
 
         for (var key in level.blocks) {
             if (level.blocks.hasOwnProperty(key)) {
@@ -318,7 +305,7 @@ function createNewGame(stage, user, inSpeed) {
             }
         }
 
-        placeMinBlocks(level, {
+        placeMinBlocks({
             type: {
                 next: 'random',
                 nextTypes: bonusTypes
@@ -328,13 +315,13 @@ function createNewGame(stage, user, inSpeed) {
     }
 
     function isGoalReached() {
-        var goal = getLevel(currentLevel).goal;
+        var goal = level.goal;
         var reached = false;
 
         if (goal.type == 'points') {
-            return outGame.stats.score >= goal.amount;
+            return currentGame.stats.score >= goal.amount;
         } else if (goal.type == 'blocks') {
-            return outGame.stats.blocks >= goal.amount;
+            return currentGame.stats.blocks >= goal.amount;
         } else if (goal.type == 'time') {
             // TODO SUR implement and also show on screen
         }
@@ -342,21 +329,20 @@ function createNewGame(stage, user, inSpeed) {
         return reached;
     }
 
+    loadStage();
     var snake = createSnake();
     var status = SnakeStatus.NEW;
-
     var snakeMove = new Kinetic.Animation(function () {
 
         function endGame() {
             snake.head.destroy();
-            status = SnakeStatus.ENDED;
+            status = SnakeStatus.END_GAME;
             snakeMove.stop();
             gameStorage.addGameScore({
                 time: getTime(),
-                user: outGame.user,
-                game: game.label,
-                speed: outGame.config.speed,
-                score: outGame.stats.score
+                user: currentGame.user,
+                game: currentGame.label,
+                score: currentGame.stats.score
             });
             console.log('game over');
         }
@@ -366,15 +352,15 @@ function createNewGame(stage, user, inSpeed) {
         }
     }, updateLayers);
 
-    var outGame = {
-        user: user,
+    var game = {
+        user: currentUser,
         stats: {
             score: 0,
             blocks: 0
         },
         status: status,
         config: {
-            speed: inSpeed
+            speed: 10 // TODO SUR change this
         },
         start: function (e) {
             var keyCode = e.keyCode;
@@ -395,7 +381,7 @@ function createNewGame(stage, user, inSpeed) {
                 if (status == SnakeStatus.RUNNING) {
                     status = SnakeStatus.PAUSED;
                     snakeMove.stop();
-                } else if (status == SnakeStatus.ENDED) {
+                } else if (status == SnakeStatus.END_GAME) {
                     document.removeEventListener('keydown', game.start);
                 } else if (status == SnakeStatus.PAUSED) {
                     status = SnakeStatus.RUNNING;
@@ -407,7 +393,7 @@ function createNewGame(stage, user, inSpeed) {
             }
         },
         onLocation: function (location) {
-            var block = getLevel(currentLevel).blocks[location.y + 'x' + location.x];
+            var block = level.blocks[location.y + 'x' + location.x];
             if (isUndefined(block)) {
                 return true;
             }
@@ -421,14 +407,13 @@ function createNewGame(stage, user, inSpeed) {
             updateStats();
             if (isGoalReached()) {
                 console.log('level completed');
-                this.status = SnakeStatus.PAUSED;
-                outGame.stats.blocks = 0;
+                this.status = SnakeStatus.END_LEVEL;
+                currentGame.stats.blocks = 0;
                 snakeMove.stop();
                 if (!isLastLevel()) {
                     currentLevel++;
-                    loadLevel(currentLevel);
-                    snake = createSnake();
-                    snakeLayer.draw();
+                    document.removeEventListener('keydown', game.start);
+                    loadLevel(stage, getCurrentLevel());
                 }
             }
 
@@ -437,27 +422,24 @@ function createNewGame(stage, user, inSpeed) {
             }
 
             if (block.type.nextAmount == 'min') {
-                placeMinBlocks(getLevel(currentLevel), block);
+                placeMinBlocks(block);
             }
             return true;
-        },
-        loadGame: function (inGame) {
-            setGame(inGame);
-            bonusLayer = new Kinetic.Layer({});
-            updateLayers.push(bonusLayer);
-
-            stage.add(bonusLayer);
-            loadLevel(currentLevel);
-            bonusLayer.draw();
         }
     };
-    document.addEventListener('keydown', outGame.start);
-    return outGame;
+    document.addEventListener('keydown', game.start);
+    load();
+    bonusLayer.draw();
+    return game;
 }
 
 function getBlockLayer(name) {
     var games = gameStorage.getGames();
     var game = games[name];
+    game.stats = {
+        score: 0,
+        blocks: 0
+    };
 
     if (isUndefined(game)) {
         console.log('game not found: ' + name);

@@ -2,24 +2,31 @@
 
 </legend>
 
-<div class="form-horizontal">
-    <div class="control-group">
-        <div class="controls">
-            <div id="gamecontainer"></div>
-        </div>
+<div class="row-fluid">
+    <div class="span2">
+        <div id="gamecontainer"></div>
     </div>
-    <div class="control-group">
-        <label for="score" class="control-label">Score</label>
+    <div class="span10 form-horizontal">
+        <div class="control-group">
+            <label for="score" class="control-label">Score</label>
 
-        <div class="controls">
-            <input type="number" readonly id="score" value="0" class="input-mini"/>
+            <div class="controls">
+                <input type="number" readonly id="score" value="0" class="input-mini"/>
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <label for="blocks" class="control-label">Blocks</label>
+        <div class="control-group">
+            <label for="blocks" class="control-label">Blocks</label>
 
-        <div class="controls">
-            <input type="number" readonly id="blocks" value="0" class="input-mini"/>
+            <div class="controls">
+                <input type="number" readonly id="blocks" value="0" class="input-mini"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="goal" class="control-label">Goal</label>
+
+            <div class="controls">
+                <span id="goal"></span>
+            </div>
         </div>
     </div>
 </div>
@@ -29,17 +36,17 @@
 <script src="js/game/game-play.js"></script>
 <script>
     $(document).ready(function () {
+        currentGame = getBlockLayer(gameSession.getCurrentGame());
+        var height = getCanvasHeight(currentGame.rows);
+        var width = getCanvasWidth(currentGame.columns);
         var stage = new Kinetic.Stage({
             container: 'gamecontainer',
-            width: 400,
-            height: 400
+            width: width,
+            height: height
         });
-        var layer = new Kinetic.Layer({});
-        layer.add(new Kinetic.Rect({ x: 0, y: 0, height: 400, width: 400, fill: 'darkgray'}));
-        stage.add(layer);
-        var newGame = createNewGame(stage, gameSession.getCurrentUser(), 10);
-        var currentGame = getBlockLayer(gameSession.getCurrentGame());
-        newGame.loadGame(currentGame);
+
+        loadLevel(stage, getCurrentLevel());
+
         $("#currentGame").text(currentGame.label);
     });
 

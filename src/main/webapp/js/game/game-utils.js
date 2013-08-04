@@ -6,7 +6,8 @@ var totalLength = length + (2 * strokeWidth);
 var SnakeStatus = {
     RUNNING: 'RUNNING',
     PAUSED: 'PAUSED',
-    ENDED: 'ENDED',
+    END_LEVEL: 'END_LEVEL',
+    END_GAME: 'END_GAME',
     NEW: 'NEW'};
 var Direction = {
     RIGHT: 'RIGHT',
@@ -81,7 +82,7 @@ function getCanvasHeight(rows) {
     return (rows * totalLength) + (init);
 }
 
-function getCoordinates(init, totalLength, location) {
+function getCoordinates(location) {
     return {
         x: init + (location.x * totalLength),
         y: init + (location.y * totalLength)
