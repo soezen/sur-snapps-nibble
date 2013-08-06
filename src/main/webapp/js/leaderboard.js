@@ -36,7 +36,7 @@ function getPlaceInLeaderboard(score) {
     });
 
     $(scores).each(function (index) {
-        if (this.score == score) {
+        if (this.score == score && scoreIndex == -1) {
             scoreIndex = index + 1;
         }
     });

@@ -25,7 +25,7 @@
             <label for="goal" class="control-label">Goal</label>
 
             <div class="controls">
-                <span id="goal"></span>
+                <input type="text" readonly id="goal" value="none" class="input-small"/>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
 <script src="js/game/game-play.js"></script>
 <script>
     $(document).ready(function () {
-        currentGame = getBlockLayer(gameSession.getCurrentGame());
+        currentGame = getBlockLayer(gameSession.getCurrentGame(), gameSession.getCurrentUser());
         var height = getCanvasHeight(currentGame.rows);
         var width = getCanvasWidth(currentGame.columns);
         var stage = new Kinetic.Stage({

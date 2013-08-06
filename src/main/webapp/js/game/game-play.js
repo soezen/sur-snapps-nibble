@@ -1,4 +1,3 @@
-var currentUser = gameSession.getCurrentUser();
 var currentGame;
 var currentLevel = 0;
 
@@ -21,9 +20,9 @@ function containsLocation(array, element) {
 }
 
 function loadLevel(stage, level) {
-    var snakeLayer;
-    var bonusLayer;
-    var updateLayers;
+    var snakeLayer = null;
+    var bonusLayer = null;
+    var updateLayers = [];
 
     function loadStage() {
         stage.destroyChildren();
@@ -241,8 +240,17 @@ function loadLevel(stage, level) {
     }
 
     function updateStats() {
-        document.getElementById("blocks").value = currentGame.stats.blocks;
-        document.getElementById("score").value = currentGame.stats.score;
+        $("#blocks").val(currentGame.stats.blocks);
+        $("#score").val(currentGame.stats.score);
+        var goal = getCurrentLevel().goal;
+        var amount = goal.amount;
+        if (goal.type == 'blocks') {
+            // TODO SUR make enum for goal type
+            amount -= currentGame.stats.blocks;
+        } else if (goal.type == 'points') {
+            amount -= currentGame.stats.score;
+        }
+        $("#goal").val(amount + ' ' + goal.type);
     }
 
     function processBonus(block) {
@@ -311,6 +319,7 @@ function loadLevel(stage, level) {
                 nextTypes: bonusTypes
             }
         });
+        updateStats();
         console.log('level loaded');
     }
 
@@ -340,7 +349,7 @@ function loadLevel(stage, level) {
             snakeMove.stop();
             gameStorage.addGameScore({
                 time: getTime(),
-                user: currentGame.user,
+                user: gameSession.getCurrentUser(),
                 game: currentGame.label,
                 score: currentGame.stats.score
             });
@@ -353,15 +362,7 @@ function loadLevel(stage, level) {
     }, updateLayers);
 
     var game = {
-        user: currentUser,
-        stats: {
-            score: 0,
-            blocks: 0
-        },
         status: status,
-        config: {
-            speed: 10 // TODO SUR change this
-        },
         start: function (e) {
             var keyCode = e.keyCode;
 
