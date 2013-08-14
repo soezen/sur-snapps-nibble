@@ -94,9 +94,9 @@ function configureScoreSlider(tblName) {
     });
     minScore.change(function () {
         var max = maxScore.val();
-        if (eval(this.value) > eval(max)) {
+        if (Number(this.value) > Number(max)) {
             this.value = max;
-        } else if (eval(this.value) < 0) {
+        } else if (Number(this.value) < 0) {
             this.value = 0;
         }
         scoreSlider.slider("values", [this.value, max]);
@@ -104,9 +104,9 @@ function configureScoreSlider(tblName) {
     });
     maxScore.change(function () {
         var min = minScore.val();
-        if (eval(min) > eval(this.value)) {
+        if (Number(min) > Number(this.value)) {
             this.value = min;
-        } else if (eval(this.value) > gameStorage.getHighScore()) {
+        } else if (Number(this.value) > gameStorage.getHighScore()) {
             this.value = gameStorage.getHighScore();
         }
         scoreSlider.slider("values", [min, this.value]);

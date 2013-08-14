@@ -1,4 +1,5 @@
 var tempGame;
+var levels = {};
 
 function nextStep() {
     var currentStep = $("#wzdgame").find("div").not(".hide").first();
@@ -16,22 +17,36 @@ function loadLevels() {
     var wzdMain = $("#wzd-main");
     var accLevels = $("#wzd-levels").find("#acclevels");
     var nbrLevels = Number(wzdMain.find("input[id=nbrlevels]").val());
-    var template = accLevels.find("div.accordion-group.hide");
 
     for (var i = 0; i < nbrLevels; i++) {
-        var level = template.clone(true, true, true);
-        level.removeClass("hide");
+        var level = cloneTemplate("levelconfig");
         var header = level.find(".accordion-heading").find("a.accordion-toggle");
         header.text("Level " + (i + 1));
         header.attr("href", "#level" + (i + 1));
         var content = level.find("#level");
+        content.attr("data-level", (i + 1));
         content.attr("id", "level" + (i + 1));
-        content.find("[id$=level]").each(function () {
-            this.id = this.id + (i + 1);
+        content.find("[id]").each(function () {
+            this.id = this.id + '-lvl' + (i + 1);
         });
         accLevels.append(level);
-        loadStage('cnvlevel' + (i + 1));
+        $("#chance-lvl" + (i + 1)).slider({
+            min: 1,
+            max: 10,
+            value: 5,
+            range: false,
+            slide: function (event, ui) {
+                var lvl = getLevel(event.target);
+                var bonusType = getActiveBonusType(lvl);
+                bonusType.chance = ui.value;
+            }
+        });
+        loadStage('canvas-lvl' + (i + 1));
     }
+}
+
+function getLevel(obj) {
+    return $(obj).parents("div[data-level]").data("level");
 }
 
 function cancelCreateGame(menuItem) {
@@ -79,7 +94,7 @@ function gameNameNotUnique(name) {
 function loadStage(cnvName) {
     var rows = tempGame.rows;
     var columns = tempGame.columns;
-    var level = { blocks: {}, minBlocks: 0 };
+    var level = { blocks: {}, minBlocks: 0, bonusTypes: [] };
     tempGame.levels.push(level);
 
     var stage = new Kinetic.Stage({
@@ -116,8 +131,8 @@ function loadStage(cnvName) {
     for (var row = 0; row < rows; row++) {
         for (var column = 0; column < columns; column++) {
             var rect = new Kinetic.Rect({
-                x: getCoordinates(init, totalLength, { y: row, x: column }).x,
-                y: getCoordinates(init, totalLength, { y: row, x: column }).y,
+                x: getCoordinates({ y: row, x: column }).x,
+                y: getCoordinates({ y: row, x: column }).y,
                 width: length,
                 height: length,
                 fill: 'white',
@@ -149,12 +164,13 @@ function loadStage(cnvName) {
 }
 
 function createGame() {
-
+    console.log(tempGame.levels.length);
     for (var i = 0; i < tempGame.levels.length; i++) {
         var level = tempGame.levels[i];
-        var goalType = document.getElementById('goaltypelevel' + (i + 1)).value;
-        var goalAmount = document.getElementById('goalamountlevel' + (i + 1)).value;
-        console.log(goalType + ' - ' + goalAmount);
+        var goalType = $("#goaltype-lvl" + (i + 1)).val();
+        var goalAmount = $("#goalamount-lvl" + (i + 1)).val();
+        console.log(goalAmount);
+        console.log(goalType);
 
         level.goal = {
             type: goalType,

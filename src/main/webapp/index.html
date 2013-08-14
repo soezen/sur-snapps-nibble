@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="css/jquery-ui-1.10.3.slider.css"/>
     <link rel="stylesheet" href="css/jquery-ui-1.10.3.datepicker.css"/>
     <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/bootstrap-glyphicons.css"/>
     <link rel="stylesheet" href="css/snakegame.css"/>
     <script src="js/jquery/jquery-2.0.3.js"></script>
     <script src="js/jquery/jquery.ui.core.js"></script>
@@ -16,7 +17,6 @@
     <script src="js/bootstrap.js"></script>
     <script src="js/jquery/jqBootstrapValidation.js"></script>
     <script src="js/jquery/jquery.tablesorter.js"></script>
-    <script src="js/jquery/jquery.tablesorter.pager.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/users.js"></script>
@@ -26,41 +26,36 @@
 <div class="container">
     <h1></h1>
 
-    <div class="navbar">
-        <div id="menu" class="navbar-inner">
-            <ul class="nav pull-left">
-                <li data-view="anonymous" class="active">
-                    <a class="btn-link" data-page="home" onclick="openPage(this)">Home</a>
-                </li>
-                <li data-view="user">
-                    <a class="btn-link" data-page="dashboard" onclick="openPage(this)">Dashboard</a>
-                </li>
-                <li data-view="user">
-                    <a class="btn-link" data-page="gameselect" onclick="openPage(this)">Play</a>
-                </li>
-                <li data-view="user">
-                    <a class="btn-link" data-page="gameoverview" onclick="openPage(this)">Games</a>
-                </li>
-                <li data-view="all">
-                    <a class="btn-link" data-page="leaderboard" onclick="openPage(this)">Leaderboard</a>
-                </li>
-            </ul>
-            <ul class="nav pull-right">
-                <li data-view="anonymous">
-                    <a class="btn-link" data-page="login" onclick="openPage(this)">Login</a>
-                </li>
-                <li data-view="user">
-                    <a class="btn-link" data-page="profile" onclick="openPage(this)">Profile</a>
-                </li>
-                <li data-view="admin">
-                    <a class="btn-link" data-page="admin" onclick="openPage(this)">Admin</a>
-                </li>
-                <li data-view="user">
-                    <a class="btn-link" data-page="home" onclick="logout(this)">Logout</a>
-                </li>
-                <li data-view="user" id="currentUser" class="brand"></li>
-            </ul>
-        </div>
+    <div id="menu" class="navbar">
+        <ul class="nav navbar-nav pull-left">
+            <li data-view="anonymous" class="active">
+                <a class="btn-link" data-page="home" onclick="openPage(this)">Home</a>
+            </li>
+            <li data-view="user">
+                <a class="btn-link" data-page="dashboard" onclick="openPage(this)">Dashboard</a>
+            </li>
+            <li data-view="user">
+                <a class="btn-link" data-page="gameoverview" onclick="openPage(this)">Games</a>
+            </li>
+            <li data-view="all">
+                <a class="btn-link" data-page="leaderboard" onclick="openPage(this)">Leaderboard</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav pull-right">
+            <li data-view="anonymous">
+                <a class="btn-link" data-page="login" onclick="openPage(this)">Login</a>
+            </li>
+            <li data-view="user">
+                <a class="btn-link" data-page="profile" onclick="openPage(this)">Profile</a>
+            </li>
+            <li data-view="admin">
+                <a class="btn-link" data-page="admin" onclick="openPage(this)">Admin</a>
+            </li>
+            <li data-view="user">
+                <a class="btn-link" data-page="home" onclick="logout(this)">Logout</a>
+            </li>
+            <li data-view="user" id="currentUser" class="navbar-brand"></li>
+        </ul>
     </div>
     <div id="content">
 

@@ -210,19 +210,21 @@ function loadLevel(stage, level) {
             var nextType = block.type.nextTypes[i];
             max += (nextType.chance * 100);
             if (random <= max) {
-                return nextType.name;
+                return nextType;
             }
         }
-        return block.type.nextTypes[0].name;
+        return block.type.nextTypes[0];
     }
 
     function placeNextBlock(block) {
-        var newLocation = getRandomFreeLocation();
-        var newType = block.type;
-        if (block.type.next == 'random') {
-            newType = types[getNextBonusType(block)];
+        if (Object.keys(level.blocks).length < level.maxBlocks) {
+            var newLocation = getRandomFreeLocation();
+            var newType = block.type;
+            if (block.type.next == 'random') {
+                newType = getNextBonusType(block);
+            }
+            level.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
         }
-        level.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
     }
 
     function removeBlock(location) {
@@ -232,7 +234,7 @@ function loadLevel(stage, level) {
     }
 
     function updateScore(block) {
-        currentGame.stats.score += block.type.score;
+        currentGame.stats.score += block.type.points;
     }
 
     function updateBlocks() {
@@ -259,7 +261,9 @@ function loadLevel(stage, level) {
             if (bonusses.hasOwnProperty(key)) {
                 var bonus = bonusses[key];
                 if (bonus == 'snakeadd') {
-                    snake.addBlock(block);
+                    if (Object.keys(snake.blocks).length < level.maxBlocks) {
+                        snake.addBlock(block);
+                    }
                 }
                 if (bonus == 'snakeremove') {
                     snake.removeBlock();
@@ -300,23 +304,25 @@ function loadLevel(stage, level) {
 
     function load() {
         bonusLayer.destroyChildren();
-
+        var walls = 0;
         for (var key in level.blocks) {
             if (level.blocks.hasOwnProperty(key)) {
                 var block = level.blocks[key];
 
                 var newBlock = createNewBlock(block.type, block.location);
                 if (isNaN(newBlock.type.nextAmount)) {
-                    level.minBlocks++;
+                    walls++;
                 }
                 level.blocks[key] = newBlock;
             }
         }
+        level.minBlocks += walls;
+        level.maxBlocks = ((currentGame.rows * currentGame.columns) - walls) / 2;
 
         placeMinBlocks({
             type: {
                 next: 'random',
-                nextTypes: bonusTypes
+                nextTypes: level.bonusTypes
             }
         });
         updateStats();
@@ -418,11 +424,11 @@ function loadLevel(stage, level) {
                 }
             }
 
-            for (var i = 0; i < block.type.nextAmount; i++) {
+            for (var i = 0; i < block.type.next.amount; i++) {
                 placeNextBlock(block);
             }
 
-            if (block.type.nextAmount == 'min') {
+            if (block.type.next.amount == 'min') {
                 placeMinBlocks(block);
             }
             return true;

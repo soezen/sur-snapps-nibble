@@ -76,7 +76,6 @@ function goToPage(tblName, index) {
 function updateTablePaginator(tblName) {
     var nbrOfPages = getNbrOfPages(tblName);
     var paginator = getPaginator(tblName);
-    console.log(nbrOfPages);
     paginator.empty();
     var prev = createPaginatorItem(tblName, '<<', previousPage);
     $(prev).addClass('disabled');
@@ -121,6 +120,8 @@ function createPaginatorItem(tblName, text, fn) {
     var a = document.createElement("a");
     a.innerHTML = text;
     a.href = "#";
+    $(a).addClass("btn");
+    $(a).addClass("btn-sm");
     $(a).on('click', function () {
         if (!$(li).hasClass('disabled')
             && !$(li).hasClass('active')) {

@@ -36,7 +36,7 @@
 <script src="js/game/game-play.js"></script>
 <script>
     $(document).ready(function () {
-        currentGame = getBlockLayer(gameSession.getCurrentGame(), gameSession.getCurrentUser());
+        currentGame = getBlockLayer(gameSession.getCurrentGame());
         var height = getCanvasHeight(currentGame.rows);
         var width = getCanvasWidth(currentGame.columns);
         var stage = new Kinetic.Stage({

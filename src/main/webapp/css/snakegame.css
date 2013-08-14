@@ -1,10 +1,120 @@
-body > div:not(#ui-datepicker-div) {
+.template {
+    display: none;
+}
+
+.thumbnail {
+    padding: 5px 0 2px 5px;
+}
+
+.thumbnail:last-of-type {
+    padding-right: 5px;
+}
+
+.glyphicon:before {
+    line-height: normal;
+}
+
+a[data-blockcolor].active {
+    color: #111111;
+}
+
+a[data-blockcolor=saddlebrown],
+a[data-blockcolor=saddlebrown]:hover {
+    color: #800000;
+}
+
+a[data-blockcolor=red],
+a[data-blockcolor=red]:hover {
+    color: #ff0000;
+}
+
+a[data-blockcolor=purple],
+a[data-blockcolor=purple]:hover {
+    color: #800080;
+}
+
+a[data-blockcolor=fuchsia],
+a[data-blockcolor=fuchsia]:hover {
+    color: #ff00ff;
+}
+
+a[data-blockcolor=green],
+a[data-blockcolor=green]:hover {
+    color: #008000;
+}
+
+a[data-blockcolor=lime],
+a[data-blockcolor=lime]:hover {
+    color: #00ff00;
+}
+
+a[data-blockcolor=olive],
+a[data-blockcolor=olive]:hover {
+    color: #808000;
+}
+
+a[data-blockcolor=yellow],
+a[data-blockcolor=yellow]:hover {
+    color: #ffff00;
+}
+
+a[data-blockcolor=navy],
+a[data-blockcolor=navy]:hover {
+    color: #000080;
+}
+
+a[data-blockcolor=teal],
+a[data-blockcolor=teal]:hover {
+    color: #008080;
+}
+
+a[data-blockcolor=cyan],
+a[data-blockcolor=cyan]:hover {
+    color: #00ffff;
+}
+
+a[data-blockcolor=orange],
+a[data-blockcolor=orange]:hover {
+    color: #eb8f00;
+}
+
+.table tbody tr.info > td {
+    background-color: #d9edf7;
+}
+
+div.ui-slider {
+    margin-top: 10px;
+}
+
+ul[id^=nextTypes] {
+    padding-left: 0;
+    padding-top: 5px;
+    list-style: none outside none;
+}
+
+ul[id^=nextTypes] > div {
+    float: left;
+}
+
+.panel {
+    padding-bottom: 0;
+}
+
+.panel-heading {
+    margin-bottom: 0;
+}
+
+body > div:not(#ui-datepicker-div):not(.sp-container) {
     margin-left: auto;
     margin-right: auto;
     padding: 10px;
-    width: 700px;
+    width: 800px;
     height: 600px;
     background-color: #f7f7f9;
+}
+
+.sp-replacer {
+    float: left;
 }
 
 h1 {

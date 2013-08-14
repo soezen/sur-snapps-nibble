@@ -2,9 +2,9 @@
     show list of games, show details of game,
     show statistics of game, have button play game,
     remove Play page from menu -->
-<div class="well-large row-fluid">
-    <div class="span10">
-        <table id="tblGames" class="tablesorter table table-hover table-bordered table-condensed">
+<div class="row">
+    <div class="col-10">
+        <table id="tblGames" class="table table-hover table-condensed table-bordered">
             <thead>
             <tr>
                 <th id="game-name" data-filtertype="text">Name</th>
@@ -15,23 +15,23 @@
             <tbody></tbody>
         </table>
 
-        <div class="pagination pagination-centered">
-            <ul data-paginator-table="tblGames" data-paginator-rowsperpage="10">
+        <div class="text-center">
+            <ul class="pagination pagination-centered" data-paginator-table="tblGames" data-paginator-rowsperpage="10">
                 <li class="active"><a href="#">1</a></li>
             </ul>
         </div>
     </div>
 
-    <div class="span1">
+    <div class="col-1">
         <div class="btn-group btn-group-vertical">
-            <a href="#" class="btn btn-small" data-page="gameplay" onclick="playGame(this)">
-                <i class="icon-play"></i>
+            <a href="#" class="btn btn-default btn-sm" data-page="gameplay" onclick="playGame(this)">
+                <i class="glyphicon glyphicon-play"></i>
             </a>
-            <a href="#" data-page="gamewizard" class="btn btn-small" onclick="openPage(this)">
-                <i class="icon-asterisk"></i>
+            <a href="#" data-page="gamewizard" class="btn btn-sm btn-default" onclick="openPage(this)">
+                <i class="glyphicon glyphicon-asterisk"></i>
             </a>
-            <a href="#" data-page="gameoverview" onclick="removeGame(this)" class="btn btn-small">
-                <i class="icon-remove"></i>
+            <a href="#" data-page="gameoverview" onclick="removeGame(this)" class="btn btn-sm btn-default">
+                <i class="glyphicon glyphicon-remove"></i>
             </a>
         </div>
     </div>
