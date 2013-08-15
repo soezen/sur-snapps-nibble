@@ -15,7 +15,6 @@ var Direction = {
     LEFT: 'LEFT',
     UP: 'UP'};
 
-// TODO SUR maxBlocks on field
 var types = {
     wall: {
         gameOver: true,
