@@ -30,6 +30,8 @@ function GameStorage() {
         delete games[id];
         storage.games = games;
         saveStorage(storage);
+
+        this.clearScores('game', id);
     };
     this.getUsers = function () {
         var storage = getStorage();
@@ -61,7 +63,7 @@ function GameStorage() {
         storage.users = users;
         saveStorage(storage);
 
-        this.clearScores(user);
+        this.clearScores('user', user);
     };
     this.getScores = function () {
         var storage = getStorage();
@@ -101,17 +103,26 @@ function GameStorage() {
         }
         return highScore;
     };
-    this.clearScores = function (user) {
+    this.clearScores = function (key, value) {
         var storage = getStorage();
-        if (isUndefined(user)) {
+        if (isUndefined(value)) {
             storage.scores = [];
+            storage.highScore = 0;
         } else {
             var newScores = [];
+            var newHighScore = 0;
             for (var i = 0; i < storage.scores.length; i++) {
-                if (storage.scores[i].user != user) {
-                    newScores.push(storage.scores[i]);
+                var currentScore = storage.scores[i];
+                if (!isUndefined(currentScore) && !isUndefined(currentScore[key])) {
+                    if (currentScore[key].toLowerCase() != value.toLowerCase()) {
+                        newScores.push(currentScore);
+                        if (newHighScore < currentScore.score) {
+                            newHighScore = currentScore.score;
+                        }
+                    }
                 }
             }
+            storage.highScore = newHighScore;
             storage.scores = newScores;
         }
         saveStorage(storage);
@@ -162,7 +173,7 @@ function SessionStorage() {
         var storage = getStorage();
         storage.currentGame = game;
         saveStorage(storage);
-    }
+    };
 
     function getStorage() {
         if (isUndefined(sessionStorage.snakeGame)) {

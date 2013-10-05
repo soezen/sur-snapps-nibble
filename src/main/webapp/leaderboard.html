@@ -11,8 +11,9 @@
         <div id="highscorecriteria" class="accordion-body collapse">
             <div class="accordion-inner form-horizontal">
                 <div class="form-group form-inline">
-                    <div class="form-group">
-                        <label class="control-label col-3" for="filterDateAfter">Date between</label>
+                    <label class="control-label col-3" for="filterDateAfter">Date between</label>
+
+                    <div class="col-6">
                         <input id="filterDateAfter" class="form-control" type="date" data-filtercolumn="clmdate"
                                data-filtertype="interval-start" style="width:100px"/>
                         <label for="filterDateBefore">and</label>
@@ -23,44 +24,45 @@
                 <div class="form-group">
                     <label for="filteruser" class="control-label col-3">User</label>
 
-                    <div class="col-5">
+                    <div class="col-6">
                         <input id="filteruser" class="form-control" type="search" list="usernames"
                                data-filtercolumn="clmuser" data-filtertype="text"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label" for="filtergame">Game</label>
+                    <label class="control-label col-3" for="filtergame">Game</label>
 
-                    <div class="controls">
+                    <div class="col-6">
                         <input id="filtergame" type="search" list="games" data-filtercolumn="clmgame"
-                               data-filtertype="text"/>
+                               data-filtertype="text" class="form-control"/>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="speedrange">Speed</label>
+                <div class="form-group form-inline">
+                    <label class="control-label col-3" for="speedrange">Speed</label>
 
-                    <div class="controls row">
-                        <div class="well-small">
-                            between
-                            <input id="minspeed" type="number" class="input-mini" value="0"
-                                   data-filtertype="interval-start" data-filtercolumn="clmspeed"/>
-                            and
-                            <input id="maxspeed" type="number" class="input-mini" value="11"
-                                   data-filtertype="interval-end" data-filtercolumn="clmspeed"/></div>
+                    <div class="col-6">
+                        <label for="minspeed">between</label>
+                        <input id="minspeed" type="number" style="width:50px" value="0" class="form-control"
+                               data-filtertype="interval-start" data-filtercolumn="clmspeed"/>
+                        <label for="maxspeed">and</label>
+                        <input id="maxspeed" type="number" style="width:50px" value="11"
+                               class="form-control hasDatepicker"
+                               data-filtertype="interval-end" data-filtercolumn="clmspeed"/>
+
                         <div id="speedrange" class="span2"></div>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label">Score</label>
+                <div class="form-group form-inline">
+                    <label class="control-label col-3" for="scorerange">Score</label>
 
-                    <div class="controls row">
-                        <div class="well-small">
-                            between
-                            <input type="number" id="minscore" class="input-mini" value="0"
-                                   data-filtertype="interval-start" data-filtercolumn="clmscore"/>
-                            and
-                            <input id="maxscore" type="number" class="input-mini" data-filtertype="interval-end"
-                                   data-filtercolumn="clmscore"/></div>
+                    <div class="col-6">
+                        <label for="minscore">between</label>
+                        <input type="number" id="minscore" style="width:75px" value="0" class="form-control"
+                               data-filtertype="interval-start" data-filtercolumn="clmscore"/>
+                        <label for="maxscore">and</label>
+                        <input id="maxscore" type="number" style="width:75px" data-filtertype="interval-end"
+                               data-filtercolumn="clmscore" class="form-control"/>
+
                         <div id="scorerange" class="span2"></div>
                     </div>
                 </div>

@@ -78,7 +78,7 @@ function validateUser($el, value, callback) {
         valid = false;
         message = 'Username already exists'
     }
-    console.log(valid);
+
     callback({
         value: value,
         valid: valid,

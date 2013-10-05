@@ -7,12 +7,13 @@
         </div>
         <div id="user_criteria" class="accordion-body collapse in">
             <div class="accordion-inner">
-                <div class="form-horizontal">
-                    <div class="control-group">
-                        <label for="search_username" class="control-label">Username</label>
+                <div class="form form-horizontal">
+                    <div class="form-group">
+                        <label for="search_username" class="control-label col-3">Username</label>
 
-                        <div class="controls">
-                            <input id="search_username" type="search" data-filtercolumn="0" data-filtertype="text"/>
+                        <div class="col-5">
+                            <input id="search_username" class="form-control" type="search" data-filtercolumn="0"
+                                   data-filtertype="text"/>
                         </div>
                     </div>
                 </div>
@@ -21,8 +22,8 @@
     </div>
 </div>
 
-<div class="well-large row-fluid">
-    <div class="span10">
+<div class="row">
+    <div class="col-10">
         <table id="tblUsers" class="tablesorter table table-hover table-bordered table-condensed">
             <thead>
             <tr>
@@ -32,24 +33,24 @@
             <tbody>
             </tbody>
         </table>
-        <p><span id="useramount"></span> users</p>
+        <p class="help-block"><span id="useramount"></span> users</p>
 
-        <div class="pagination pagination-centered">
-            <ul data-paginator-table="tblUsers" data-paginator-rowsperpage="10">
+        <div class="text-center">
+            <ul class="pagination" data-paginator-table="tblUsers" data-paginator-rowsperpage="10">
                 <li class="active"><a href="#">1</a></li>
             </ul>
         </div>
     </div>
 
-    <div class="span1">
+    <div class="col-1">
         <div class="btn-group btn-group-vertical">
-            <button onclick="removeSelectedUsers()" class="btn btn-small">
-                <i class="icon-remove"></i>
+            <button onclick="removeSelectedUsers()" class="btn btn-default">
+                <i class="glyphicon glyphicon-remove"></i>
             </button>
         </div>
     </div>
 </div>
-<button onclick="clearHistory()" class="btn">Clear History</button>
+<button onclick="clearHistory()" class="btn btn-default hide">Clear History</button>
 
 <script src="js/table/table-utils.js"></script>
 <script src="js/table/table-filter.js"></script>
