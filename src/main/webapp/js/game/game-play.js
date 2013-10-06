@@ -244,15 +244,7 @@ function loadLevel(stage, level) {
     function updateStats() {
         $("#blocks").val(currentGame.stats.blocks);
         $("#score").val(currentGame.stats.score);
-        var goal = getCurrentLevel().goal;
-        var amount = goal.amount;
-        if (goal.type == 'blocks') {
-            // TODO SUR make enum for goal type
-            amount -= currentGame.stats.blocks;
-        } else if (goal.type == 'points') {
-            amount -= currentGame.stats.score;
-        }
-        $("#goal").val(amount + ' ' + goal.type);
+        $("#goal").val(getCurrentLevel().goal.amount + ' ' + getCurrentLevel().goal.type);
     }
 
     function processBonus(block) {
@@ -325,28 +317,48 @@ function loadLevel(stage, level) {
                 nextTypes: level.bonusTypes
             }
         });
+
+        if (getCurrentLevel().goal.type == 'time') {
+            timer.setLimit(getCurrentLevel().goal.amount);
+        }
+
         updateStats();
         console.log('level loaded');
     }
+
+// TODO SUR add forum so you can have feedback from users
 
     function isGoalReached() {
         var goal = level.goal;
         var reached = false;
 
         if (goal.type == 'points') {
-            return currentGame.stats.score >= goal.amount;
+            reached = currentGame.stats.score >= goal.amount;
         } else if (goal.type == 'blocks') {
-            return currentGame.stats.blocks >= goal.amount;
+            reached = currentGame.stats.blocks >= goal.amount;
         } else if (goal.type == 'time') {
-            // TODO SUR implement and also show on screen
+            reached = timer.current() >= goal.amount;
         }
 
-        return reached;
+        if (reached) {
+            console.log('level completed');
+            this.status = SnakeStatus.END_LEVEL;
+            currentGame.stats.blocks = 0;
+            snakeMove.stop();
+            if (!isLastLevel()) {
+                currentLevel++;
+                document.removeEventListener('keydown', game.start);
+                loadLevel(stage, getCurrentLevel());
+            }
+        }
     }
 
     loadStage();
     var snake = createSnake();
     var status = SnakeStatus.NEW;
+    var timer = new Timer(document.getElementById('time'), function () {
+        isGoalReached();
+    });
     var snakeMove = new Kinetic.Animation(function () {
 
         function endGame() {
@@ -386,14 +398,18 @@ function loadLevel(stage, level) {
                 snake.changedDirection = Direction.DOWN;
             } else if (keyCode == 32) {
                 if (status == SnakeStatus.RUNNING) {
+                    timer.stop();
                     status = SnakeStatus.PAUSED;
                     snakeMove.stop();
                 } else if (status == SnakeStatus.END_GAME) {
+                    timer.stop();
                     document.removeEventListener('keydown', game.start);
                 } else if (status == SnakeStatus.PAUSED) {
+                    timer.start();
                     status = SnakeStatus.RUNNING;
                     snakeMove.start();
                 } else if (status == SnakeStatus.NEW) {
+                    timer.start();
                     status = SnakeStatus.RUNNING;
                     snakeMove.start();
                 }
@@ -412,17 +428,7 @@ function loadLevel(stage, level) {
             updateScore(block);
             processBonus(block);
             updateStats();
-            if (isGoalReached()) {
-                console.log('level completed');
-                this.status = SnakeStatus.END_LEVEL;
-                currentGame.stats.blocks = 0;
-                snakeMove.stop();
-                if (!isLastLevel()) {
-                    currentLevel++;
-                    document.removeEventListener('keydown', game.start);
-                    loadLevel(stage, getCurrentLevel());
-                }
-            }
+            isGoalReached();
 
             for (var i = 0; i < block.type.next.amount; i++) {
                 placeNextBlock(block);

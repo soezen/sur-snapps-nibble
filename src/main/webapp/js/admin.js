@@ -44,9 +44,4 @@ function removeSelectedUsers() {
     $("input").val('');
 }
 
-// TODO SUR also be able to delete only scores of one person
-function clearHistory() {
-    gameStorage.clearScores();
-}
-
 

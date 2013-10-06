@@ -173,13 +173,10 @@ function loadStage(cnvName) {
 }
 
 function createGame() {
-    console.log(tempGame.levels.length);
     for (var i = 0; i < tempGame.levels.length; i++) {
         var level = tempGame.levels[i];
         var goalType = $("#goaltype-lvl" + (i + 1)).val();
         var goalAmount = $("#goalamount-lvl" + (i + 1)).val();
-        console.log(goalAmount);
-        console.log(goalType);
 
         level.goal = {
             type: goalType,
