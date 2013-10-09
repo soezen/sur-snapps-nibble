@@ -7,7 +7,7 @@ function Timer(field, callback) {
 
     function count() {
         time++;
-        field.value = time + " seconds";
+        field.value = time;
         if (withLimit && time >= limit) {
             callback();
         } else {
@@ -20,18 +20,25 @@ function Timer(field, callback) {
     }
 
     function startTimer() {
-        time = -1;
         counting = true;
         count();
     }
 
+    function pauseTimer() {
+        counting = false;
+    }
+
     function stopTimer() {
+        time = -1;
         counting = false;
     }
 
     return {
         start: function () {
             startTimer();
+        },
+        pause: function () {
+            pauseTimer();
         },
         stop: function () {
             stopTimer();

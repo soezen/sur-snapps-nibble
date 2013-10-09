@@ -87,7 +87,7 @@
                             <option value="none"></option>
                             <option value="blocks">Blocks</option>
                             <option value="points">Points</option>
-                            <option value="time">Time</option>
+                            <option value="seconds">Seconds</option>
                         </select>
                     </div>
                 </div>
@@ -172,6 +172,13 @@
                                     </ul>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="control-label col-3">Bonus</label>
+
+                        <div id="bonus" class="col-9">
+                            <label><input type="checkbox" value="snakeadd" onchange="updateBonus(this)"/>Add Snake Block</label>
                         </div>
                     </div>
                 </div>

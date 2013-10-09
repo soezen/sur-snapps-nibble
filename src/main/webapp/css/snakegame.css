@@ -14,6 +14,10 @@
     padding-right: 5px;
 }
 
+label > input[type=checkbox] {
+    margin: 10px 5px 5px 5px;
+}
+
 .glyphicon:before {
     line-height: normal;
 }

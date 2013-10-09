@@ -122,6 +122,10 @@ function showActiveBonusBlock(levelNbr) {
         for (var i = 0; i < bonusType.next.types.length; i++) {
             addNextType(levelNbr, bonusType.next.types[i]);
         }
+        $("#bonus-lvl" + levelNbr).find("input[type=checkbox]").prop('checked', false);
+        for (var i = 0; i < bonusType.bonus.length; i++) {
+            $("#bonus-lvl" + levelNbr).find("input[type=checkbox][value='" + bonusType.bonus[i] + "']").prop('checked', true);
+        }
     }
 }
 
@@ -247,6 +251,17 @@ function updatePoints(input) {
     setPoints(lvl, value);
 }
 
+function updateBonus(input) {
+    var lvl = getLevel(input);
+    var checked = input.checked;
+    var value = input.value;
+    if (checked) {
+        addBonus(lvl, value);
+    } else {
+        removeBonus(lvl, value);
+    }
+}
+
 function updateNextType(select) {
     var lvl = getLevel(select);
     var selectedValue = $(select).val();
@@ -268,6 +283,16 @@ function setNextType(level, type) {
 
 function setPoints(level, points) {
     getActiveBonusType(level).points = points;
+}
+
+function addBonus(level, bonus) {
+    getActiveBonusType(level).bonus.push(bonus);
+}
+
+function removeBonus(level, bonus) {
+    var bonusType = getActiveBonusType(level);
+    var index = bonusType.bonus.indexOf(bonus);
+    bonusType.bonus.splice(index, 1);
 }
 
 function addNextType(levelNbr, newColor) {

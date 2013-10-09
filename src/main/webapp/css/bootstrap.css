@@ -1498,6 +1498,9 @@ legend {
 label {
     display: inline-block;
     margin-bottom: 5px;
+}
+
+.control-label {
     font-weight: bold;
 }
 
@@ -1510,7 +1513,7 @@ input[type="search"] {
 input[type="radio"],
 input[type="checkbox"] {
     margin: 4px 0 0;
-    margin-top: 1px  \9;
+    margin-top: 1px   \9;
     /* IE8-9 */
 
     line-height: normal;

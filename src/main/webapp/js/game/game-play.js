@@ -247,6 +247,7 @@ function loadLevel(stage, level) {
         $("#goal").val(getCurrentLevel().goal.amount + ' ' + getCurrentLevel().goal.type);
     }
 
+// TODO SUR fix random generation of bonus blocks
     function processBonus(block) {
         var bonusses = block.type.bonus;
         for (var key in bonusses) {
@@ -318,7 +319,7 @@ function loadLevel(stage, level) {
             }
         });
 
-        if (getCurrentLevel().goal.type == 'time') {
+        if (getCurrentLevel().goal.type == 'seconds') {
             timer.setLimit(getCurrentLevel().goal.amount);
         }
 
@@ -327,6 +328,7 @@ function loadLevel(stage, level) {
     }
 
 // TODO SUR add forum so you can have feedback from users
+    // TODO SUR create interface to assign bonuses to blocks
 
     function isGoalReached() {
         var goal = level.goal;
@@ -336,7 +338,7 @@ function loadLevel(stage, level) {
             reached = currentGame.stats.score >= goal.amount;
         } else if (goal.type == 'blocks') {
             reached = currentGame.stats.blocks >= goal.amount;
-        } else if (goal.type == 'time') {
+        } else if (goal.type == 'seconds') {
             reached = timer.current() >= goal.amount;
         }
 
@@ -349,6 +351,7 @@ function loadLevel(stage, level) {
                 currentLevel++;
                 document.removeEventListener('keydown', game.start);
                 loadLevel(stage, getCurrentLevel());
+                $("#status").val("LEVEL COMPLETE");
             }
         }
     }
@@ -356,7 +359,7 @@ function loadLevel(stage, level) {
     loadStage();
     var snake = createSnake();
     var status = SnakeStatus.NEW;
-    var timer = new Timer(document.getElementById('time'), function () {
+    var timer = new Timer(document.getElementById('seconds'), function () {
         isGoalReached();
     });
     var snakeMove = new Kinetic.Animation(function () {
@@ -367,18 +370,21 @@ function loadLevel(stage, level) {
             snakeMove.stop();
             gameStorage.addGameScore({
                 time: getTime(),
+                duration: timer.current(),
                 user: gameSession.getCurrentUser(),
                 game: currentGame.label,
                 score: currentGame.stats.score
             });
             console.log('game over');
+            timer.stop();
+            $("#status").val("GAME OVER");
         }
 
         if (!snake.move()) {
             endGame();
         }
     }, updateLayers);
-
+// TODO SUR add bonus types: add or remove time
     var game = {
         status: status,
         start: function (e) {
@@ -398,17 +404,21 @@ function loadLevel(stage, level) {
                 snake.changedDirection = Direction.DOWN;
             } else if (keyCode == 32) {
                 if (status == SnakeStatus.RUNNING) {
-                    timer.stop();
+                    timer.pause();
                     status = SnakeStatus.PAUSED;
                     snakeMove.stop();
+                    $("#status").val("PAUSED");
                 } else if (status == SnakeStatus.END_GAME) {
+                    $("#status").val("GAME OVER");
                     timer.stop();
                     document.removeEventListener('keydown', game.start);
                 } else if (status == SnakeStatus.PAUSED) {
+                    $("#status").val("PLAYING");
                     timer.start();
                     status = SnakeStatus.RUNNING;
                     snakeMove.start();
                 } else if (status == SnakeStatus.NEW) {
+                    $("#status").val("PLAYING");
                     timer.start();
                     status = SnakeStatus.RUNNING;
                     snakeMove.start();
