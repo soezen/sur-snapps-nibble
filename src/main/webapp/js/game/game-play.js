@@ -206,23 +206,28 @@ function loadLevel(stage, level) {
     function getNextBonusType(block) {
         var random = Math.floor(Math.random() * 100);
         var max = 0;
-        for (var i = 0; i < block.type.nextTypes.length; i++) {
-            var nextType = block.type.nextTypes[i];
-            max += (nextType.chance * 100);
+        var next = block.type.next;
+
+        for (var i = 0; i < next.types.length; i++) {
+            var nextType = findBonusType(next.types[i]);
+            max += (nextType.chance * 10);
+
             if (random <= max) {
-                return nextType;
+                return nextType.name;
             }
         }
-        return block.type.nextTypes[0];
+        return next.types[0];
     }
 
     function placeNextBlock(block) {
         if (Object.keys(level.blocks).length < level.maxBlocks) {
             var newLocation = getRandomFreeLocation();
             var newType = block.type;
-            if (block.type.next == 'random') {
-                newType = getNextBonusType(block);
+
+            if (newType.next.type == 'random') {
+                newType = findBonusType(getNextBonusType(block));
             }
+
             level.blocks[newLocation.y + 'x' + newLocation.x] = createNewBlock(newType, newLocation);
         }
     }
@@ -295,6 +300,16 @@ function loadLevel(stage, level) {
         }
     }
 
+    function getLevelBonusTypes() {
+        var types = [];
+
+        for (var i = 0; i < level.bonusTypes.length; i++) {
+            types.push(level.bonusTypes[i].name);
+        }
+
+        return types;
+    }
+
     function load() {
         bonusLayer.destroyChildren();
         var walls = 0;
@@ -314,8 +329,11 @@ function loadLevel(stage, level) {
 
         placeMinBlocks({
             type: {
-                next: 'random',
-                nextTypes: level.bonusTypes
+                next: {
+                    type: 'random',
+                    amount: '1',
+                    types: getLevelBonusTypes()
+                }
             }
         });
 
@@ -325,6 +343,19 @@ function loadLevel(stage, level) {
 
         updateStats();
         console.log('level loaded');
+    }
+
+    function findBonusType(name) {
+        var type;
+
+        for (var i = 0; i < level.bonusTypes.length; i++) {
+            var bonusType = level.bonusTypes[i];
+            if (bonusType.name == name) {
+                return bonusType;
+            }
+        }
+
+        return type;
     }
 
 // TODO SUR add forum so you can have feedback from users
@@ -427,6 +458,7 @@ function loadLevel(stage, level) {
         },
         onLocation: function (location) {
             var block = level.blocks[location.y + 'x' + location.x];
+
             if (isUndefined(block)) {
                 return true;
             }
