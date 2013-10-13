@@ -38,21 +38,6 @@
                     </div>
                 </div>
                 <div class="form-group form-inline">
-                    <label class="control-label col-3" for="speedrange">Speed</label>
-
-                    <div class="col-6">
-                        <label for="minspeed">between</label>
-                        <input id="minspeed" type="number" style="width:50px" value="0" class="form-control"
-                               data-filtertype="interval-start" data-filtercolumn="clmspeed"/>
-                        <label for="maxspeed">and</label>
-                        <input id="maxspeed" type="number" style="width:50px" value="11"
-                               class="form-control hasDatepicker"
-                               data-filtertype="interval-end" data-filtercolumn="clmspeed"/>
-
-                        <div id="speedrange" class="span2"></div>
-                    </div>
-                </div>
-                <div class="form-group form-inline">
                     <label class="control-label col-3" for="scorerange">Score</label>
 
                     <div class="col-6">
@@ -77,7 +62,7 @@
         <th id="clmdate" data-filtertype="date" data-filterrange="[0, 10]">Date</th>
         <th id="clmuser" data-filtertype="text">User</th>
         <th id="clmgame" data-filtertype="text">Game</th>
-        <th id="clmspeed" data-filtertype="number" data-filterrange="[0, 2]">Speed</th>
+        <th id="clmduration" data-filtertype="number">Duration (seconds)</th>
         <th id="clmscore" data-filtertype="number">Score</th>
     </tr>
     </thead>
@@ -103,7 +88,6 @@
         // TODO SUR only show datepickers when browser does not show by default
         addDatepickers('tblScores');
         addFilters('tblScores');
-        configureSpeedSlider('tblScores');
         configureScoreSlider('tblScores');
         loadLeaderboard();
         updateTablePaginator('tblScores');

@@ -177,10 +177,44 @@
                     <div class="row">
                         <label class="control-label col-3">Bonus</label>
 
-                        <div id="bonus" class="col-9">
-                            <label><input type="checkbox" value="snakeadd" onchange="updateBonus(this)"/>Add Snake Block</label>
-                            <label><input type="checkbox" value="snakeremove" onchange="updateBonus(this)"/>Remove Snake
-                                Block</label>
+                        <div class="col-9" id="bonus">
+                            <table class="table table-bordered table-condensed">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>not</th>
+                                    <th>+</th>
+                                    <th>-</th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td>Snake Block</td>
+                                    <td><input type="radio" name="snake" onchange="updateBonus(this)" value="not"
+                                               checked/></td>
+                                    <td><input type="radio" name="snake" onchange="updateBonus(this)" value="snakeadd"/>
+                                    </td>
+                                    <td><input type="radio" name="snake" onchange="updateBonus(this)"
+                                               value="snakeremove"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Speed</td>
+                                    <td><input type="radio" name="speed" onchange="updateBonus(this)" value="not"
+                                               checked/></td>
+                                    <td><input type="radio" name="speed" onchange="updateBonus(this)" value="speedup"/>
+                                    </td>
+                                    <td><input type="radio" name="speed" onchange="updateBonus(this)"
+                                               value="speeddown"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Time</td>
+                                    <td><input type="radio" name="time" onchange="updateBonus(this)" value="not"
+                                               checked/></td>
+                                    <td><input type="radio" name="time" onchange="updateBonus(this)" value="timeup"/>
+                                    </td>
+                                    <td><input type="radio" name="time" onchange="updateBonus(this)" value="timedown"/>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

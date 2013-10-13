@@ -22,7 +22,7 @@ function createLeaderboardRow(tbl, values) {
     appendCell(row, values.time, false);
     appendCell(row, values.user, false);
     appendCell(row, values.game, false);
-    appendCell(row, values.speed, false);
+    appendCell(row, values.duration, false);
     appendCell(row, values.score, false);
 
     tbl.append(row);
@@ -110,50 +110,6 @@ function configureScoreSlider(tblName) {
             this.value = gameStorage.getHighScore();
         }
         scoreSlider.slider("values", [min, this.value]);
-        filter(tblName, this);
-    });
-}
-
-function configureSpeedSlider(tblName) {
-    var minSpeed = $("#minspeed");
-    var maxSpeed = $("#maxspeed");
-
-    minSpeed.off('change');
-    maxSpeed.off('change');
-
-    var speedSlider = $("#speedrange").slider({
-        range: true,
-        min: 0,
-        max: 11,
-        values: [0, 11],
-        slide: function (event, ui) {
-            if (ui.values[0] == ui.value) {
-                minSpeed.val(ui.values[0]);
-                filter(tblName, document.getElementById("minspeed"));
-            } else if (ui.values[1] == ui.value) {
-                maxSpeed.val(ui.values[1]);
-                filter(tblName, document.getElementById("maxspeed"));
-            }
-        }
-    });
-    minSpeed.change(function () {
-        var max = maxSpeed.val();
-        if (eval(this.value) > eval(max)) {
-            this.value = max;
-        } else if (eval(this.value) < 0) {
-            this.value = 0;
-        }
-        speedSlider.slider("values", [this.value, max]);
-        filter(tblName, this);
-    });
-    maxSpeed.change(function () {
-        var min = minSpeed.val();
-        if (eval(min) > eval(this.value)) {
-            this.value = min;
-        } else if (eval(this.value) > 11) {
-            this.value = 11;
-        }
-        speedSlider.slider("values", [min, this.value]);
         filter(tblName, this);
     });
 }

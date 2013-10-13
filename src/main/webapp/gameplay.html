@@ -52,6 +52,7 @@
 <script>
     $(document).ready(function () {
         currentGame = getBlockLayer(gameSession.getCurrentGame());
+        console.log(currentGame);
         var height = getCanvasHeight(currentGame.rows);
         var width = getCanvasWidth(currentGame.columns);
         var stage = new Kinetic.Stage({

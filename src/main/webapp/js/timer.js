@@ -33,6 +33,11 @@ function Timer(field, callback) {
         counting = false;
     }
 
+    function addLimit(plus) {
+        limit += plus;
+        console.log(limit);
+    }
+
     return {
         start: function () {
             startTimer();
@@ -49,6 +54,13 @@ function Timer(field, callback) {
         setLimit: function (newLimit) {
             limit = newLimit;
             withLimit = !isUndefined(limit);
+        },
+        limitUp: function () {
+            addLimit(10);
+        },
+        limitDown: function () {
+            limit = limit - 10;
         }
+
     };
 }

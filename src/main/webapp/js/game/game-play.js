@@ -252,25 +252,34 @@ function loadLevel(stage, level) {
         $("#goal").val(getCurrentLevel().goal.amount + ' ' + getCurrentLevel().goal.type);
     }
 
-// TODO SUR fix random generation of bonus blocks
     function processBonus(block) {
+        console.log(block);
         var bonusses = block.type.bonus;
+        console.log(bonusses);
         for (var key in bonusses) {
             if (bonusses.hasOwnProperty(key)) {
                 var bonus = bonusses[key];
-                if (bonus == 'snakeadd') {
-                    if (Object.keys(snake.blocks).length < level.maxBlocks) {
-                        snake.addBlock(block);
-                    }
-                }
-                if (bonus == 'snakeremove') {
-                    snake.removeBlock();
-                }
-                if (bonus == 'speedup') {
-                    snake.speedUp();
-                }
-                if (bonus == 'speeddown') {
-                    snake.speedDown();
+                switch (bonusses[key]) {
+                    case 'snakeadd':
+                        if (Object.keys(snake.blocks).length < level.maxBlocks) {
+                            snake.addBlock(block);
+                        }
+                        break;
+                    case 'snakeremove':
+                        snake.removeBlock();
+                        break;
+                    case 'speedup':
+                        snake.speedUp();
+                        break;
+                    case 'speeddown':
+                        snake.speedDown();
+                        break;
+                    case 'timeup':
+                        timer.limitUp();
+                        break;
+                    case 'timedown':
+                        timer.limitDown();
+                        break;
                 }
             }
         }
@@ -347,7 +356,6 @@ function loadLevel(stage, level) {
 
     function findBonusType(name) {
         var type;
-
         for (var i = 0; i < level.bonusTypes.length; i++) {
             var bonusType = level.bonusTypes[i];
             if (bonusType.name == name) {

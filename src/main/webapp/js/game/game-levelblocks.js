@@ -76,6 +76,24 @@ function addBonusBlock(obj) {
     }
 }
 
+function removeBonusBlock(obj) {
+    var level = getLevel(obj);
+    var color = getActiveBonusType(level).color;
+    tempGame.levels[level - 1].bonusTypes.splice(getActiveBonusTypeIndex(level), 1);
+    getActiveBonusBlock(level).remove();
+    showActiveBonusBlock(level);
+
+    var bonusTypes = tempGame.levels[level - 1].bonusTypes;
+
+    for (var i = 0; i < bonusTypes.length; i++) {
+        var bonusType = bonusTypes[i];
+        var index = bonusType.next.types.indexOf(color);
+        if (index >= 0) {
+            bonusType.next.types.splice(index, 1);
+        }
+    }
+}
+
 function setBonusBlockActive(level, block) {
     var currentActive = getActiveBonusBlock(level);
     if (currentActive.get()[0] != block.get()[0]) {
@@ -108,6 +126,7 @@ function showActiveBonusBlock(levelNbr) {
             palette: getAvailableColors(levelNbr),
             change: function (color) {
                 getActiveBonusBlock(levelNbr).attr("data-blockcolor", color.toName());
+                getActiveBonusType(levelNbr).name = color.toName();
                 getActiveBonusType(levelNbr).color = color.toName();
                 updateWhereUsed(levelNbr, color.toName());
                 updateNextTypes(levelNbr);
@@ -122,9 +141,9 @@ function showActiveBonusBlock(levelNbr) {
         for (var i = 0; i < bonusType.next.types.length; i++) {
             addNextType(levelNbr, bonusType.next.types[i]);
         }
-        $("#bonus-lvl" + levelNbr).find("input[type=checkbox]").prop('checked', false);
-        for (var i = 0; i < bonusType.bonus.length; i++) {
-            $("#bonus-lvl" + levelNbr).find("input[type=checkbox][value='" + bonusType.bonus[i] + "']").prop('checked', true);
+        $("#bonus-lvl" + levelNbr).find("input[type=radio][value='not']").prop('checked', true);
+        for (var j = 0; j < bonusType.bonus.length; j++) {
+            $("#bonus-lvl" + levelNbr).find("input[type=radio][value='" + bonusType.bonus[j] + "']").prop('checked', true);
         }
     }
 }
@@ -162,24 +181,6 @@ function getActiveBonusTypeIndex(level) {
 
 function getActiveBonusType(level) {
     return tempGame.levels[level - 1].bonusTypes[getActiveBonusTypeIndex(level)];
-}
-
-function removeBonusBlock(obj) {
-    var level = getLevel(obj);
-    var color = getActiveBonusType(level).color;
-    tempGame.levels[level - 1].bonusTypes.splice(getActiveBonusTypeIndex(level), 1);
-    getActiveBonusBlock(level).remove();
-    showActiveBonusBlock(level);
-
-    var bonusTypes = tempGame.levels[level - 1].bonusTypes;
-
-    for (var i = 0; i < bonusTypes.length; i++) {
-        var bonusType = bonusTypes[i];
-        var index = bonusType.next.types.indexOf(color);
-        if (index >= 0) {
-            bonusType.next.types.splice(index, 1);
-        }
-    }
 }
 
 function updateWhereUsed(level, newColor) {
@@ -255,11 +256,13 @@ function updateBonus(input) {
     var lvl = getLevel(input);
     var checked = input.checked;
     var value = input.value;
-    if (checked) {
+    $("#bonus-lvl" + lvl).find("input[type=radio][name='" + input.name + "']").each(function (index, bonus) {
+        removeBonus(lvl, bonus.value);
+    });
+    if (value != 'not') {
         addBonus(lvl, value);
-    } else {
-        removeBonus(lvl, value);
     }
+    console.log(getActiveBonusType(lvl).bonus);
 }
 
 function updateNextType(select) {
@@ -292,7 +295,9 @@ function addBonus(level, bonus) {
 function removeBonus(level, bonus) {
     var bonusType = getActiveBonusType(level);
     var index = bonusType.bonus.indexOf(bonus);
-    bonusType.bonus.splice(index, 1);
+    if (index >= 0) {
+        bonusType.bonus.splice(index, 1);
+    }
 }
 
 function addNextType(levelNbr, newColor) {

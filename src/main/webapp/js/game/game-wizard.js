@@ -64,7 +64,8 @@ function createTemporaryGame() {
         label: name,
         levels: [],
         rows: rows,
-        columns: columns
+        columns: columns,
+        createTime: new Date()
     };
     nextStep();
 }
@@ -130,8 +131,6 @@ function loadStage(cnvName) {
 
     for (var row = 0; row < rows; row++) {
         for (var column = 0; column < columns; column++) {
-            console.log('X: ' + row + 'x' + column);
-            console.log('1');
             var rect = new Kinetic.Rect({
                 x: getCoordinates({ y: row, x: column }).x,
                 y: getCoordinates({ y: row, x: column }).y,
@@ -141,19 +140,14 @@ function loadStage(cnvName) {
                 stroke: 'black',
                 strokeWidth: strokeWidth
             });
-            console.log('2');
             rect.row = row;
             rect.column = column;
-            console.log('3');
 
             rect.on('mouseover mouseup', function () {
-                console.log(this.row);
-
                 if (listening) {
                     toggleRect(this);
                 }
             });
-            console.log('4');
             rect.on('mousedown', function () {
                 if (this.getFill() == 'black') {
                     fillColor = 'white'
@@ -162,10 +156,8 @@ function loadStage(cnvName) {
                 }
                 toggleRect(this);
             });
-            console.log('5');
 
             bottomLayer.add(rect);
-            console.log('6');
         }
     }
     bottomLayer.draw();
@@ -183,6 +175,5 @@ function createGame() {
             amount: Number(goalAmount)
         }
     }
-
     gameStorage.addGame(tempGame);
 }
