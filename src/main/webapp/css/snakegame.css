@@ -41,8 +41,8 @@ a[data-blockcolor=purple]:hover {
     color: #800080;
 }
 
-a[data-blockcolor=fuchsia],
-a[data-blockcolor=fuchsia]:hover {
+a[data-blockcolor=magenta],
+a[data-blockcolor=magenta]:hover {
     color: #ff00ff;
 }
 

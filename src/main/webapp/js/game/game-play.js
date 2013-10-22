@@ -253,13 +253,11 @@ function loadLevel(stage, level) {
     }
 
     function processBonus(block) {
-        console.log(block);
-        var bonusses = block.type.bonus;
-        console.log(bonusses);
-        for (var key in bonusses) {
-            if (bonusses.hasOwnProperty(key)) {
-                var bonus = bonusses[key];
-                switch (bonusses[key]) {
+        var bonuses = block.type.bonus;
+        for (var key in bonuses) {
+            if (bonuses.hasOwnProperty(key)) {
+                var bonus = bonuses[key];
+                switch (bonuses[key]) {
                     case 'snakeadd':
                         if (Object.keys(snake.blocks).length < level.maxBlocks) {
                             snake.addBlock(block);
@@ -275,10 +273,12 @@ function loadLevel(stage, level) {
                         snake.speedDown();
                         break;
                     case 'timeup':
-                        timer.limitUp();
+                        getCurrentLevel().goal.amount += 2;
+                        timer.setLimit(getCurrentLevel().goal.amount);
                         break;
                     case 'timedown':
-                        timer.limitDown();
+                        getCurrentLevel().goal.amount -= 2;
+                        timer.setLimit(getCurrentLevel().goal.amount);
                         break;
                 }
             }
@@ -367,7 +367,6 @@ function loadLevel(stage, level) {
     }
 
 // TODO SUR add forum so you can have feedback from users
-    // TODO SUR create interface to assign bonuses to blocks
 
     function isGoalReached() {
         var goal = level.goal;
@@ -383,16 +382,34 @@ function loadLevel(stage, level) {
 
         if (reached) {
             console.log('level completed');
-            this.status = SnakeStatus.END_LEVEL;
             currentGame.stats.blocks = 0;
             snakeMove.stop();
             if (!isLastLevel()) {
                 currentLevel++;
                 document.removeEventListener('keydown', game.start);
                 loadLevel(stage, getCurrentLevel());
+                this.status = SnakeStatus.END_LEVEL;
                 $("#status").val("LEVEL COMPLETE");
+            } else {
+                endGame();
             }
         }
+    }
+
+    function endGame() {
+        snake.head.destroy();
+        status = SnakeStatus.END_GAME;
+        snakeMove.stop();
+        gameStorage.addGameScore({
+            time: getTime(),
+            duration: timer.current(),
+            user: gameSession.getCurrentUser(),
+            game: currentGame.label,
+            score: currentGame.stats.score
+        });
+        console.log('game over');
+        timer.stop();
+        $("#status").val("GAME OVER");
     }
 
     loadStage();
@@ -403,27 +420,12 @@ function loadLevel(stage, level) {
     });
     var snakeMove = new Kinetic.Animation(function () {
 
-        function endGame() {
-            snake.head.destroy();
-            status = SnakeStatus.END_GAME;
-            snakeMove.stop();
-            gameStorage.addGameScore({
-                time: getTime(),
-                duration: timer.current(),
-                user: gameSession.getCurrentUser(),
-                game: currentGame.label,
-                score: currentGame.stats.score
-            });
-            console.log('game over');
-            timer.stop();
-            $("#status").val("GAME OVER");
-        }
 
         if (!snake.move()) {
             endGame();
         }
     }, updateLayers);
-// TODO SUR add bonus types: add or remove time
+
     var game = {
         status: status,
         start: function (e) {

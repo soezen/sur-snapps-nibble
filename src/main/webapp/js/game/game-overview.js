@@ -17,6 +17,7 @@ function createGamesRow(tbl, values) {
     appendCell(row, values.label, false);
     appendCell(row, values.rows, false);
     appendCell(row, values.columns, false);
+    appendCell(row, values.createTime, false);
 
     $(row).on('click', function () {
         tbl.find('.info').not(row).removeClass('info');

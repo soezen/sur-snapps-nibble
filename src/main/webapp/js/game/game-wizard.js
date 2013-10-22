@@ -65,7 +65,7 @@ function createTemporaryGame() {
         levels: [],
         rows: rows,
         columns: columns,
-        createTime: new Date()
+        createTime: getTime()
     };
     nextStep();
 }

@@ -1,6 +1,6 @@
 function getColors() {
     return [
-        'cyan', 'teal', 'navy', 'yellow', 'olive', 'lime', 'green', 'orange', 'fuchsia', 'purple', 'red', 'saddlebrown'
+        'cyan', 'teal', 'navy', 'yellow', 'olive', 'lime', 'green', 'orange', 'magenta', 'purple', 'red', 'saddlebrown'
     ];
 }
 
@@ -125,10 +125,10 @@ function showActiveBonusBlock(levelNbr) {
             showPaletteOnly: true,
             palette: getAvailableColors(levelNbr),
             change: function (color) {
+                updateWhereUsed(levelNbr, getActiveBonusType(levelNbr).color, color.toName());
                 getActiveBonusBlock(levelNbr).attr("data-blockcolor", color.toName());
                 getActiveBonusType(levelNbr).name = color.toName();
                 getActiveBonusType(levelNbr).color = color.toName();
-                updateWhereUsed(levelNbr, color.toName());
                 updateNextTypes(levelNbr);
             }
         });
@@ -183,22 +183,23 @@ function getActiveBonusType(level) {
     return tempGame.levels[level - 1].bonusTypes[getActiveBonusTypeIndex(level)];
 }
 
-function updateWhereUsed(level, newColor) {
-    var usedColors = getUsedColors(level);
+function updateWhereUsed(level, oldColor, newColor) {
+    var bonusTypes = tempGame.levels[level - 1].bonusTypes;
+    var max = bonusTypes.length;
 
-    // if this color is used as a sub color, remove it
-    $("#level" + level).find("[data-colortype=next]").each(function () {
-        if ($.inArray(this.dataset.blockcolor, usedColors) == -1) {
-            $(this).spectrum("set", newColor);
-
-            var nextTypes = getActiveBonusType(level).next.types;
-            var index = nextTypes.indexOf(this.dataset.blockcolor);
+    for (var i = 0; i < max; i += 1) {
+        var bonusType = bonusTypes[i];
+        var nextTypes = bonusType.next.types;
+        var index = nextTypes.indexOf(oldColor);
+        if (index >= 0) {
             nextTypes.splice(index, 1);
             nextTypes.push(newColor);
-            this.dataset.blockcolor = newColor;
 
+            if (bonusType === getActiveBonusType(level)) {
+                $("#level" + level).find("[data-colortype=next][data-blockcolor=" + oldColor + "]").attr("data-blockcolor", newColor);
+            }
         }
-    });
+    }
 }
 
 function getActiveBonusBlock(level) {
