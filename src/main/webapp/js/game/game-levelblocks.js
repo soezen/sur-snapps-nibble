@@ -4,6 +4,15 @@ function getColors() {
     ];
 }
 
+function getUsedColors(level) {
+    var usedColors = [];
+    $("div[data-level=" + level + "]").find("a[data-blockcolor]").each(function () {
+        usedColors.push(this.dataset.blockcolor);
+    });
+
+    return usedColors;
+}
+
 function getAvailableColors(level) {
     var usedColors = getUsedColors(level);
     return $.grep(getColors(), function (element) {
@@ -27,15 +36,6 @@ function getAvailableUsedColors(list, level) {
         }
         return false;
     });
-}
-
-function getUsedColors(level) {
-    var usedColors = [];
-    $("div[data-level=" + level + "]").find("a[data-blockcolor]").each(function () {
-        usedColors.push(this.dataset.blockcolor);
-    });
-
-    return usedColors;
 }
 
 function cloneTemplate(temp) {
