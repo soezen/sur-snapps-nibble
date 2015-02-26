@@ -18,7 +18,7 @@ public class GuiceRestConfig extends GuiceServletContextListener {
         this.sc = servletContextEvent.getServletContext();
         super.contextInitialized(servletContextEvent);
     }
-
+test
     @Override
     protected Injector getInjector() {
         AbstractModule dictionaryModule = loadDictionaryModule();
