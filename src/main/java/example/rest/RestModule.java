@@ -16,4 +16,6 @@ public class RestModule extends ServletModule {
                         ImmutableMap.of(JSONConfiguration.FEATURE_POJO_MAPPING,
                                 "true"));
     }
+    
+    public void doNothing() { }
 }
